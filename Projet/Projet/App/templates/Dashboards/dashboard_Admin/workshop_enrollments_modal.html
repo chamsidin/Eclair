@@ -1,0 +1,24 @@
+<!-- Workshop Enrollments Modal -->
+<div id="workshopEnrollmentsModal" class="fixed inset-0 hidden z-50 flex items-center justify-center" style="background: rgba(6, 18, 34, 0.85); backdrop-filter: blur(8px);">
+    <div class="w-full max-w-5xl max-h-[90vh] overflow-y-auto m-4" style="background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%); border: 1px solid rgba(160, 230, 220, 0.12); border-radius: 18px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45); backdrop-filter: blur(14px);">
+        <div class="p-6" style="border-bottom: 1px solid rgba(160, 230, 220, 0.12);">
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-bold" style="color: #eaf6f3;">
+                    <i class="fas fa-users mr-2" style="color: #2fe7d1;"></i>
+                    Inscriptions à l'atelier
+                </h2>
+                <button onclick="closeWorkshopEnrollmentsModal()" class="transition-colors" style="color: rgba(234, 246, 243, 0.6);" onmouseover="this.style.color='#2fe7d1'" onmouseout="this.style.color='rgba(234, 246, 243, 0.6)'">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div id="workshopEnrollmentsModalContent" class="p-6">
+            <!-- Content will be loaded dynamically -->
+            <div class="text-center py-8">
+                <i class="fas fa-spinner fa-spin text-3xl" style="color: #2fe7d1;"></i>
+                <p class="mt-4" style="color: rgba(234, 246, 243, 0.72);">Chargement...</p>
+            </div>
+        </div>
+    </div>
+</div>

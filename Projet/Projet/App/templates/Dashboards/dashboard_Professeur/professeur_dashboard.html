@@ -1,0 +1,193 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/professeur-dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="professeur-dashboard min-h-screen py-8">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Tableau de bord Professeur</h1>
+                    <p class="text-gray-600">Consultez les informations de vos élèves</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm text-gray-500">Connecté en tant que</p>
+                        <p class="font-semibold text-primary">{{ user.get_full_name|default:user.username }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-tie text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Total Students -->
+            <div class="bg-white rounded-lg shadow-md p-6 hover-lift">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Élèves Inscrits</p>
+                        <p class="text-3xl font-bold text-primary">{{ students.count }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-users text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Active Enrollments -->
+            <div class="bg-white rounded-lg shadow-md p-6 hover-lift">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Inscriptions Actives</p>
+                        <p class="text-3xl font-bold text-secondary">{{ enrollments.count }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-calendar-check text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Documents Available -->
+            <a href="{% url 'App:professeur_documents' %}" class="block">
+                <div class="bg-white rounded-lg shadow-md p-6 hover-lift cursor-pointer transition-transform hover:scale-105">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-600">Documents</p>
+                            <p class="text-3xl font-bold text-purple-600">{{ documents.count }}</p>
+                            <p class="text-xs text-gray-500 mt-1">Cliquez pour voir</p>
+                        </div>
+                        <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-file-alt text-purple-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <!-- Attendance Sheets Overview -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Feuilles de Présence</h3>
+                <a href="{% url 'App:professeur_attendance_sheets' %}" class="text-primary hover:text-primary-dark font-semibold text-sm">
+                    Voir tout <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            {% if attendance_sheets %}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {% for sheet in attendance_sheets %}
+                <a href="{% url 'App:professeur_attendance_sheets' %}?sheet={{ sheet.id }}" class="border border-gray-200 rounded-lg p-4 hover:border-primary hover:shadow-md transition-all">
+                    <div class="flex items-center justify-between mb-2">
+                        <h4 class="font-semibold text-gray-900">{{ sheet.workshop.title }}</h4>
+                        {% if sheet.is_finalized %}
+                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            <i class="fas fa-check-circle mr-1"></i>Finalisée
+                        </span>
+                        {% else %}
+                        <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            <i class="fas fa-clock mr-1"></i>En cours
+                        </span>
+                        {% endif %}
+                    </div>
+                    <div class="text-sm text-gray-600 mb-2">
+                        <p><strong>Date:</strong> {{ sheet.date|date:"d/m/Y" }}</p>
+                        <p><strong>Intervenant:</strong> {{ sheet.workshop.intervenant.get_full_name|default:sheet.workshop.intervenant.username }}</p>
+                        <p><strong>Élèves:</strong> {{ sheet.attendances.count }} inscrit(s)</p>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        Créée le {{ sheet.created_at|date:"d/m/Y H:i" }}
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <i class="fas fa-calendar-check text-gray-400 text-4xl mb-4"></i>
+                <p class="text-gray-500">Aucune feuille de présence disponible</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Documents Overview -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-gray-900">Documents Récents</h3>
+                <a href="{% url 'App:professeur_documents' %}" class="text-primary hover:text-primary-dark font-semibold text-sm">
+                    Voir tout <i class="fas fa-arrow-right ml-1"></i>
+                </a>
+            </div>
+            {% if documents %}
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Document</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Intervenant</th>
+                            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                            <th class="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for document in documents|slice:":5" %}
+                        <tr class="hover:bg-gray-50">
+                            <td class="px-4 py-3 text-sm font-medium text-gray-900">{{ document.title }}</td>
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    {% if document.document_type == 'cours' %}bg-blue-100 text-blue-800
+                                    {% elif document.document_type == 'exercice' %}bg-green-100 text-green-800
+                                    {% elif document.document_type == 'ressource' %}bg-yellow-100 text-yellow-800
+                                    {% elif document.document_type == 'devoir' %}bg-purple-100 text-purple-800
+                                    {% elif document.document_type == 'corrige' %}bg-pink-100 text-pink-800
+                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                    {{ document.get_document_type_display }}
+                                </span>
+                            </td>
+                            <td class="px-4 py-3 text-sm text-gray-500">{{ document.uploader.get_full_name|default:document.uploader.username }}</td>
+                            <td class="px-4 py-3 text-sm text-gray-500 whitespace-nowrap">{{ document.uploaded_at|date:"d/m/Y" }}</td>
+                            <td class="px-4 py-3 text-center text-sm">
+                                <a href="{{ document.file.url }}" target="_blank" class="text-primary hover:text-primary-dark" title="Télécharger">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <i class="fas fa-file-alt text-gray-400 text-4xl mb-4"></i>
+                <p class="text-gray-500">Aucun document disponible</p>
+            </div>
+            {% endif %}
+        </div>
+
+        
+
+        
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.body.classList.add('dark-theme');
+
+    // Auto-refresh data every 60 seconds
+    setInterval(function() {
+        // You can add AJAX calls here to refresh student data
+        console.log('Refreshing professeur dashboard...');
+    }, 60000);
+</script>
+{% endblock %}

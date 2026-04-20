@@ -1,0 +1,314 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}Faire un Don - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/formulaires-dark.css' %}">
+<style>
+    /* Hide spinner arrows on number input */
+    #amount::-webkit-outer-spin-button,
+    #amount::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    #amount[type=number] {
+        -moz-appearance: textfield;
+        appearance: textfield;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="inscription-container">
+    <a href="{% url 'App:home' %}" class="back-button">
+        <i class="fas fa-arrow-left"></i> Retour à l'accueil
+    </a>
+    
+    <div class="text-center mb-4">
+        <h1 class="display-4 text-primary"><i class="fas fa-heart"></i> Faire un Don</h1>
+        <p class="lead">Soutenez notre mission éducative et aidez-nous à éclairer l'avenir de nos jeunes</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" id="donationForm" novalidate>
+        {% csrf_token %}
+        
+        <input type="hidden" name="donation_type" id="donation_type" value="one_time">
+        
+        <!-- Montant du don -->
+        <div class="form-section">
+            <h3><i class="fas fa-euro-sign"></i> Choisissez le montant de votre don</h3>
+            <p class="text-muted mb-3">Sélectionnez un montant ou entrez le vôtre</p>
+            
+            <div class="text-center mb-4">
+                <div class="d-flex gap-3 justify-content-center" style="display: inline-flex;">
+                    <button type="button" class="btn btn-outline-primary amount-btn" data-amount="10" style="padding: 20px; font-size: 1.2rem; font-weight: bold; border: 2px solid; min-width: 120px;">
+                        10 €
+                    </button>
+                    <button type="button" class="btn btn-outline-primary amount-btn" data-amount="20" style="padding: 20px; font-size: 1.2rem; font-weight: bold; border: 2px solid; min-width: 120px;">
+                        20 €
+                    </button>
+                    <button type="button" class="btn btn-outline-primary amount-btn" data-amount="50" style="padding: 20px; font-size: 1.2rem; font-weight: bold; border: 2px solid; min-width: 120px;">
+                        50 €
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="amount"><i class="fas fa-edit"></i> Autre montant (€) <span class="required">*</span></label>
+                <div style="position: relative; display: inline-block; width: 100%;">
+                    <input type="number"
+                           name="amount"
+                           id="amount"
+                           class="form-control"
+                           placeholder="Entrez votre montant"
+                           min="0.01"
+                           step="0.01"
+                           required
+                           style="font-size: 1.5rem; font-weight: bold; text-align: center; padding-right: 50px; width: 100%;">
+                    <span style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 1.5rem; pointer-events: none; color: #6c757d;">€</span>
+                </div>
+                <div id="tax_reduction_info" style="margin-top: 10px; text-align: center; font-size: 1.15rem; color: #6c757d; display: none;">
+                    Soit <span id="amount_after_reduction" style="font-weight: bold; color: #28a745;">0.00</span> € après réduction fiscale
+                </div>
+            </div>
+        </div>
+        
+        <!-- Paiement par échéances -->
+        <div class="form-section">
+            <h3><i class="fas fa-calendar-alt"></i> Mode de paiement</h3>
+            <p class="text-muted mb-3">Choisissez de payer en une fois ou par échéances mensuelles</p>
+            
+            <div class="form-group">
+                <label for="payment_method">
+                    <input type="radio" name="payment_method" id="payment_method_one_time" value="one_time" checked>
+                    Paiement unique (immédiat)
+                </label>
+            </div>
+            
+            <div class="form-group">
+                <label for="payment_method_installments">
+                    <input type="radio" name="payment_method" id="payment_method_installments" value="installments">
+                    Paiement par échéances mensuelles
+                </label>
+            </div>
+            
+            <div class="form-group" id="installments_group" style="display: none; margin-left: 30px; margin-top: 15px;">
+                <label for="installments_count">Nombre d'échéances (maximum 12 mois) <span class="required">*</span></label>
+                <input type="number" 
+                       name="installments_count" 
+                       id="installments_count" 
+                       class="form-control" 
+                       min="1" 
+                       max="12" 
+                       value="1"
+                       style="max-width: 200px;">
+                <div class="help-text">
+                    Le montant total sera divisé par le nombre d'échéances. Le paiement initial sera effectué immédiatement, puis les échéances suivantes seront prélevées mensuellement.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Informations du donateur (optionnel) -->
+        <div class="form-section">
+            <h3><i class="fas fa-user"></i> Vos informations (optionnel pour don anonyme)</h3>
+            
+            <div class="form-group">
+                <label for="donor_first_name">Prénom</label>
+                <input type="text" 
+                       name="donor_first_name" 
+                       id="donor_first_name" 
+                       class="form-control" 
+                       placeholder="Votre prénom"
+                       value="{{ user_first_name|default:'' }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="donor_last_name">Nom</label>
+                <input type="text" 
+                       name="donor_last_name" 
+                       id="donor_last_name" 
+                       class="form-control" 
+                       placeholder="Votre nom"
+                       value="{{ user_last_name|default:'' }}">
+            </div>
+            
+            <div class="form-group">
+                <label for="donor_email">Email</label>
+                <input type="email" 
+                       name="donor_email" 
+                       id="donor_email" 
+                       class="form-control" 
+                       placeholder="votre.email@exemple.com"
+                       value="{{ user_email|default:'' }}">
+                <div class="help-text">Pour recevoir la confirmation et le reçu fiscal</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="donor_date_of_birth">Date de naissance</label>
+                <input type="date" 
+                       name="donor_date_of_birth" 
+                       id="donor_date_of_birth" 
+                       class="form-control" 
+                       placeholder="JJ/MM/AAAA">
+                <div class="help-text">Format: JJ/MM/AAAA</div>
+            </div>
+            
+            <div class="form-group">
+                <label for="donor_address">Adresse</label>
+                <input type="text" 
+                       name="donor_address" 
+                       id="donor_address" 
+                       class="form-control" 
+                       placeholder="Numéro et nom de rue">
+            </div>
+            
+            <div class="form-group">
+                <label for="donor_zip_code">Code Postal</label>
+                <input type="text" 
+                       name="donor_zip_code" 
+                       id="donor_zip_code" 
+                       class="form-control" 
+                       placeholder="33000">
+            </div>
+            
+            <div class="form-group">
+                <label for="donor_city">Ville</label>
+                <input type="text" 
+                       name="donor_city" 
+                       id="donor_city" 
+                       class="form-control" 
+                       placeholder="Bordeaux">
+            </div>
+            
+            <div class="form-group">
+                <label for="message">Message</label>
+                <textarea name="message" 
+                          id="message" 
+                          class="form-control" 
+                          rows="4" 
+                          placeholder="Un message à partager avec nous..."></textarea>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn-submit" id="submitBtn">
+                <i class="fas fa-lock"></i> Procéder au paiement
+            </button>
+        </div>
+    </form>
+
+    
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Apply dark theme to body
+    document.body.classList.add('dark-theme');
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        const amountBtns = document.querySelectorAll('.amount-btn');
+        const amountInput = document.getElementById('amount');
+        const form = document.getElementById('donationForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const paymentMethodOneTime = document.getElementById('payment_method_one_time');
+        const paymentMethodInstallments = document.getElementById('payment_method_installments');
+        const installmentsGroup = document.getElementById('installments_group');
+        const installmentsCount = document.getElementById('installments_count');
+        const taxReductionInfo = document.getElementById('tax_reduction_info');
+        const amountAfterReduction = document.getElementById('amount_after_reduction');
+        
+        // Amount button selection
+        amountBtns.forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                e.preventDefault();
+                amountBtns.forEach(b => b.classList.remove('selected'));
+                this.classList.add('selected');
+                
+                const amount = this.dataset.amount;
+                amountInput.value = amount;
+            });
+        });
+        
+        // Also select custom when typing
+        amountInput.addEventListener('input', function() {
+            amountBtns.forEach(b => b.classList.remove('selected'));
+            calculateTaxReduction();
+        });
+        
+        // Calculate and display tax reduction (66% reduction)
+        function calculateTaxReduction() {
+            const amount = parseFloat(amountInput.value);
+            if (amount && amount > 0) {
+                // 66% tax reduction
+                const reduction = amount * 0.66;
+                // Amount after reduction = total - reduction
+                const amountAfter = amount - reduction;
+                
+                // Display with 2 decimal places
+                amountAfterReduction.textContent = amountAfter.toFixed(2);
+                taxReductionInfo.style.display = 'block';
+            } else {
+                taxReductionInfo.style.display = 'none';
+            }
+        }
+        
+        // Calculate on amount button click as well
+        amountBtns.forEach(btn => {
+            btn.addEventListener('click', function() {
+                setTimeout(calculateTaxReduction, 100); // Small delay to ensure value is set
+            });
+        });
+        
+        // Payment method toggle
+        function toggleInstallments() {
+            if (paymentMethodInstallments.checked) {
+                installmentsGroup.style.display = 'block';
+                installmentsCount.required = true;
+            } else {
+                installmentsGroup.style.display = 'none';
+                installmentsCount.required = false;
+            }
+        }
+        
+        paymentMethodOneTime.addEventListener('change', toggleInstallments);
+        paymentMethodInstallments.addEventListener('change', toggleInstallments);
+        
+        // Form validation
+        form.addEventListener('submit', function(e) {
+            const amount = parseFloat(amountInput.value);
+
+            if (!amount || amount <= 0) {
+                e.preventDefault();
+                alert('Le montant doit être positif');
+                return false;
+            }
+            
+            // Disable button to prevent double submission
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement en cours...';
+        });
+        
+        // Real-time validation
+        amountInput.addEventListener('blur', function() {
+            const amount = parseFloat(this.value);
+            if (this.value.trim() !== '' && (!amount || amount <= 0)) {
+                this.style.borderColor = '#ff7f7f';
+            } else if (this.value.trim() !== '') {
+                this.style.borderColor = '#2fe7d1';
+            }
+        });
+    });
+</script>
+{% endblock %}
+

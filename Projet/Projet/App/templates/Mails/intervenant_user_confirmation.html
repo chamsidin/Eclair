@@ -1,0 +1,39 @@
+{% extends 'Mails/base_email.html' %}
+
+{% block email_content %}
+    <div class="header">
+        <h2>Candidature Reçue - Les Éclaireurs</h2>
+    </div>
+    
+    <div class="content">
+        <p>Bonjour {{ prenom }} {{ nom }},</p>
+        
+        <div class="success-box">
+            <strong>✓ Votre candidature a bien été reçue !</strong>
+        </div>
+        
+        <p>Nous vous remercions d'avoir soumis votre candidature pour devenir intervenant au sein de notre association Les Éclaireurs.</p>
+        
+        <p>Votre dossier sera examiné par notre équipe prochainement. Si votre profil correspond à nos besoins, nous vous contacterons pour organiser un entretien.</p>
+        
+        <p><strong>Récapitulatif de votre candidature :</strong></p>
+        <ul>
+            <li><strong>Niveau d'études :</strong> {{ niveau_etudes }}</li>
+            <li><strong>Domaine d'études :</strong> {{ domaine_etudes }}</li>
+            <li><strong>Matières :</strong> {{ matieres }}</li>
+            <li><strong>Disponibilités :</strong> {{ disponibilites }}</li>
+            <li><strong>Heures par semaine :</strong> {{ heures_semaine }}</li>
+        </ul>
+        
+        <p>Nous vous remercions pour l'intérêt que vous portez à notre association et pour votre engagement en faveur de l'accompagnement scolaire.</p>
+        
+        <p>Cordialement,<br>
+        <strong>L'équipe des Éclaireurs</strong></p>
+    </div>
+    
+    <div class="footer">
+        <p>Les Éclaireurs - Plateforme d'accompagnement scolaire</p>
+        <p>Cet email est un accusé de réception automatique, merci de ne pas y répondre.</p>
+    </div>
+{% endblock %}
+

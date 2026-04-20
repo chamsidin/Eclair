@@ -1,0 +1,851 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Les Éclaireurs - Plateforme Éducative Collaborative{% endblock %}</title>
+    
+    <!-- TailwindCSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts - Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#7290e0',
+                        secondary: '#6fafac',
+                        lightgray: '#F3F4F6',
+                        darkgray: '#374151',
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #7290e0 0%, #6fafac 80%);
+        }
+        
+        /* Dark theme header adjustments */
+        body.dark-theme header {
+            background: #111827 !important;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        body.dark-theme .text-white {
+            color: #fff !important;
+        }
+        
+        body.dark-theme .text-gray-700 {
+            color: rgba(255, 255, 255, 0.6) !important;
+        }
+        
+        body.dark-theme .text-gray-700:hover {
+            color: #2fe7d1 !important;
+        }
+        
+        .hero-background-image {
+            background: linear-gradient(180deg, #061222 0%, #042034 60%, #021121 100%);
+            width: 100%;
+            height: 100%;
+        }
+        
+        .hover-lift {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+        
+        .smooth-transition {
+            transition: all 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        /* Magic Wand Cursor Effect */
+        .custom-cursor,
+        .cursor-glow {
+            display: none;
+        }
+        
+        .cursor-sparkle {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 9999;
+            background: radial-gradient(circle, #7290e0 0%, #6fafac 100%);
+            box-shadow: 0 0 10px rgba(114, 144, 224, 0.8), 0 0 20px rgba(111, 175, 172, 0.6);
+            animation: sparkle-fade 1s ease-out forwards;
+            transform: translate(-50%, -50%);
+        }
+        
+        /* Scroll offset for sections to account for fixed header */
+        section[id] {
+            scroll-margin-top: 100px;
+        }
+        
+        @keyframes sparkle-fade {
+            0% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, calc(-50% - 30px)) scale(0);
+            }
+        }
+        
+        @keyframes wand-glow {
+            0%, 100% {
+                box-shadow: 0 0 10px rgba(114, 144, 224, 0.8), 0 0 20px rgba(111, 175, 172, 0.6);
+            }
+            50% {
+                box-shadow: 0 0 20px rgba(114, 144, 224, 1), 0 0 40px rgba(111, 175, 172, 0.8), 0 0 60px rgba(114, 144, 224, 0.4);
+            }
+        }
+        
+        .custom-cursor.active {
+            animation: wand-glow 1.5s ease-in-out infinite;
+        }
+        
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(12, 206, 235, 0.6);
+            border-radius: 50%;
+        }
+        
+        @keyframes float1 {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(10px, -30px) scale(1.2);
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes float2 {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.5;
+            }
+            33% {
+                transform: translate(-15px, -20px) scale(0.9);
+                opacity: 0.7;
+            }
+            66% {
+                transform: translate(20px, -10px) scale(1.1);
+                opacity: 0.9;
+            }
+        }
+        
+        @keyframes float3 {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg) scale(1);
+                opacity: 0.6;
+            }
+            50% {
+                transform: translate(-25px, -25px) rotate(180deg) scale(1.15);
+                opacity: 0.8;
+            }
+        }
+        
+        @keyframes float4 {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.7;
+            }
+            25% {
+                transform: translate(15px, -15px) scale(1.1);
+                opacity: 0.8;
+            }
+            75% {
+                transform: translate(-10px, -35px) scale(0.95);
+                opacity: 0.6;
+            }
+        }
+        
+        @keyframes float5 {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+                opacity: 0.5;
+            }
+            50% {
+                transform: translate(30px, -15px) scale(1.3);
+                opacity: 0.9;
+            }
+        }
+        
+        /* Glow text effect for titles */
+        .glow-text {
+            color: #ffffff !important;
+            font-weight: 600 !important;
+            text-shadow:
+                0 0 2px  #ffffff,
+                0 0 5px  rgba(240,245,255,0.7),
+                0 0 10px rgba(220,230,245,0.5),
+                0 0 18px rgba(200,210,230,0.35) !important;
+        }
+    </style>
+    
+    <!-- Flatpickr Modern Calendar -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <style>
+        /* Modern Flatpickr Calendar Styling - Themed */
+        .flatpickr-calendar {
+            background: #ffffff;
+            border-radius: 16px;
+            border: none;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .flatpickr-months {
+            background: linear-gradient(135deg, #7290e0 0%, #6fafac 100%);
+            border-radius: 16px 16px 0 0;
+            padding: 20px 15px;
+        }
+        
+        .flatpickr-current-month {
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .flatpickr-current-month .flatpickr-monthDropdown-months {
+            background: transparent;
+            color: white;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        
+        .flatpickr-current-month .flatpickr-monthDropdown-months option {
+            color: #333;
+            background: white;
+        }
+        
+        .flatpickr-current-month .numInputWrapper input {
+            background: transparent;
+            color: white;
+            border: none;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .flatpickr-months .flatpickr-prev-month,
+        .flatpickr-months .flatpickr-next-month {
+            color: white;
+            fill: white;
+            padding: 10px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .flatpickr-months .flatpickr-prev-month:hover,
+        .flatpickr-months .flatpickr-next-month:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .flatpickr-weekdays {
+            background: #f8f9fa;
+            padding: 12px 0;
+        }
+        
+        .flatpickr-weekday {
+            color: #7290e0;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
+        .flatpickr-days {
+            padding: 10px;
+        }
+        
+        .flatpickr-day {
+            border-radius: 10px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+            color: #333;
+            margin: 2px;
+        }
+        
+        .flatpickr-day:hover:not(.flatpickr-disabled) {
+            background: #e8f0fe;
+            border-color: #7290e0;
+        }
+        
+        .flatpickr-day.selected,
+        .flatpickr-day.selected:hover {
+            background: linear-gradient(135deg, #7290e0 0%, #6fafac 100%);
+            border-color: #7290e0;
+            color: white;
+            font-weight: 600;
+            box-shadow: 0 4px 12px rgba(114, 144, 224, 0.3);
+        }
+        
+        .flatpickr-day.today {
+            border-color: #6fafac;
+            color: #6fafac;
+            font-weight: 700;
+        }
+        
+        .flatpickr-day.today:hover {
+            background: #e0f5f4;
+            border-color: #6fafac;
+        }
+        
+        .flatpickr-disabled {
+            color: #ccc !important;
+        }
+        
+        /* Time Picker Styling */
+        .flatpickr-time {
+            border-top: 2px solid #e9ecef;
+            padding: 20px 15px;
+            background: #f8f9fa;
+            height: auto;
+            min-height: 80px;
+        }
+        
+        .flatpickr-time-separator {
+            color: #7290e0;
+            font-weight: 700;
+            font-size: 20px;
+            margin: 0 8px;
+        }
+        
+        .flatpickr-am-pm {
+            color: #7290e0;
+            font-weight: 600;
+            font-size: 16px;
+        }
+        
+        .flatpickr-time input {
+            background: white !important;
+            color: #333 !important;
+            font-weight: 700 !important;
+            font-size: 20px !important;
+            border: 2px solid #e0e0e0 !important;
+            border-radius: 10px !important;
+            padding: 12px 8px !important;
+            height: 50px !important;
+            min-width: 70px !important;
+            text-align: center !important;
+        }
+        
+        .flatpickr-time input:hover {
+            background: #f8f9fa !important;
+            border-color: #7290e0 !important;
+        }
+        
+        .flatpickr-time input:focus {
+            background: #ffffff !important;
+            border-color: #6fafac !important;
+            outline: none !important;
+            box-shadow: 0 0 0 3px rgba(111, 175, 172, 0.15) !important;
+        }
+        
+        .flatpickr-time .numInputWrapper {
+            height: 50px !important;
+        }
+        
+        /* Hide the arrow buttons */
+        .flatpickr-time .numInputWrapper span.arrowUp,
+        .flatpickr-time .numInputWrapper span.arrowDown {
+            display: none !important;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-white text-gray-800">
+    <!-- Floating Particles Background -->
+    <div id="particles" class="particles"></div>
+    
+    <!-- Magic Wand Cursor -->
+    <div class="custom-cursor"></div>
+    <div class="cursor-glow"></div>
+    
+    <!-- Header / Navigation -->
+    <header class="fixed top-0 left-0 right-0 shadow-md z-50 smooth-transition" style="background-color: #111827 !important;">
+        <nav class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo -->
+                <div class="flex items-center space-x-3">
+       
+                    <span class="text-2xl font-bold text-white glow-text">Les Éclaireurs</span>
+                </div>
+                
+                <!-- Desktop Menu -->
+                <div class="hidden lg:flex items-center space-x-8">
+                    <a href="{% url 'App:home' %}" class="text-gray-300 hover:text-primary smooth-transition font-medium">Accueil</a>
+                    <a href="{% url 'App:home' %}#qui-sommes-nous" class="text-gray-300 hover:text-primary smooth-transition font-medium">Qui sommes-nous</a>
+                    <a href="{% url 'App:home' %}#notre-mission" class="text-gray-300 hover:text-primary smooth-transition font-medium">Notre mission</a>
+                    <a href="{% url 'App:home' %}#contact" class="text-gray-300 hover:text-primary smooth-transition font-medium">Contact</a>
+                </div>
+                
+                <!-- Auth Buttons -->
+                <div class="hidden lg:flex items-center space-x-4">
+                    {% if user.is_authenticated %}
+                        <!-- User Menu -->
+                        <div class="relative group">
+                            <button class="flex items-center space-x-2 px-4 py-2 text-gray-300 hover:text-primary smooth-transition font-medium">
+                                <div class="w-8 h-8 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-white text-sm"></i>
+                                </div>
+                                <span>{{ user.get_full_name|default:user.username }}</span>
+                                <i class="fas fa-chevron-down text-xs"></i>
+                            </button>
+                            
+                            <!-- Dropdown Menu -->
+                            <div class="absolute right-0 mt-2 w-48 rounded-lg shadow-lg border border-gray-200 invisible group-hover:visible transition-all duration-200 z-50" style="background-color: #ffffff;">
+                                <div class="py-2">
+                                    {% if user.role == 'admin' %}
+                                    <a href="{% url 'App:admin_dashboard' %}" class="block px-4 py-2 text-sm text-black hover:bg-gray-100">
+                                        <i class="fas fa-tachometer-alt mr-2"></i>Tableau de bord Admin
+                                    </a>
+                                    {% elif user.role == 'parent' %}
+                                    <a href="{% url 'App:parent_dashboard' %}" class="block px-4 py-2 text-sm text-black hover:bg-gray-100">
+                                        <i class="fas fa-tachometer-alt mr-2"></i>Tableau de bord Parent
+                                    </a>
+                                    {% elif user.role == 'intervenant' %}
+                                    <a href="{% url 'App:intervenant_dashboard' %}" class="block px-4 py-2 text-sm text-black hover:bg-gray-100">
+                                        <i class="fas fa-tachometer-alt mr-2"></i>Tableau de bord Intervenant
+                                    </a>
+                                    {% elif user.role == 'professeur' %}
+                                    <a href="{% url 'App:professeur_dashboard' %}" class="block px-4 py-2 text-sm text-black hover:bg-gray-100">
+                                        <i class="fas fa-tachometer-alt mr-2"></i>Tableau de bord Professeur
+                                    </a>
+                                    {% endif %}
+                                    <a href="{% url 'App:user_profile' %}" class="block px-4 py-2 text-sm text-black hover:bg-gray-100">
+                                        <i class="fas fa-user-circle mr-2"></i>Mon profil
+                                    </a>
+                                    <div class="border-t border-gray-200 my-1"></div>
+                                    <a href="{% url 'App:user_logout' %}" class="block px-4 py-2 text-sm text-black hover:bg-gray-100">
+                                        <i class="fas fa-sign-out-alt mr-2"></i>Déconnexion
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{% url 'App:login' %}" class="px-6 py-2 text-secondary border-2 border-secondary rounded-lg hover:bg-secondary hover:text-white smooth-transition font-semibold">
+                            Connexion
+                        </a>
+                        <a href="{% url 'App:main_formulaires' %}" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 hover:shadow-lg smooth-transition font-semibold">
+                            Inscription
+                        </a>
+                    {% endif %}
+                </div>
+                
+                <!-- Mobile Menu Button -->
+                <button id="mobile-menu-btn" class="lg:hidden text-gray-300 hover:text-primary focus:outline-none">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+            
+            <!-- Mobile Menu -->
+            <div id="mobile-menu" class="hidden lg:hidden mt-4 pb-4 border-t border-gray-200">
+                <div class="flex flex-col space-y-4 mt-4">
+                    <a href="{% url 'App:home' %}" class="text-gray-300 hover:text-primary smooth-transition font-medium">Accueil</a>
+                    <a href="{% url 'App:home' %}#qui-sommes-nous" class="text-gray-300 hover:text-primary smooth-transition font-medium">Qui sommes-nous</a>
+                    <a href="{% url 'App:home' %}#notre-mission" class="text-gray-300 hover:text-primary smooth-transition font-medium">Notre mission</a>
+                    <a href="{% url 'App:home' %}#contact" class="text-gray-300 hover:text-primary smooth-transition font-medium">Contact</a>
+                    <div class="flex flex-col space-y-2 pt-4">
+                        {% if user.is_authenticated %}
+                            {% if user.role == 'admin' %}
+                            <a href="{% url 'App:admin_dashboard' %}" class="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-lg smooth-transition font-semibold text-center">
+                                Tableau de bord Admin
+                            </a>
+                            {% elif user.role == 'parent' %}
+                            <a href="{% url 'App:parent_dashboard' %}" class="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-lg smooth-transition font-semibold text-center">
+                                Tableau de bord Parent
+                            </a>
+                            {% elif user.role == 'intervenant' %}
+                            <a href="{% url 'App:intervenant_dashboard' %}" class="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-lg smooth-transition font-semibold text-center">
+                                Tableau de bord Intervenant
+                            </a>
+                            {% elif user.role == 'professeur' %}
+                            <a href="{% url 'App:professeur_dashboard' %}" class="px-6 py-2 bg-primary text-white rounded-lg hover:shadow-lg smooth-transition font-semibold text-center">
+                                Tableau de bord Professeur
+                            </a>
+                            {% endif %}
+                            <a href="{% url 'App:user_profile' %}" class="px-6 py-2 bg-secondary text-white rounded-lg hover:shadow-lg smooth-transition font-semibold text-center">
+                                <i class="fas fa-user-circle mr-2"></i>Mon profil
+                            </a>
+                            <a href="{% url 'App:user_logout' %}" class="px-6 py-2 text-primary border-2 border-primary rounded-lg hover:bg-primary hover:text-white smooth-transition font-semibold text-center">
+                                Déconnexion
+                            </a>
+                        {% else %}
+                            <a href="{% url 'App:login' %}" class="px-6 py-2 text-secondary border-2 border-secondary rounded-lg hover:bg-secondary hover:text-white smooth-transition font-semibold text-center">
+                                Connexion
+                            </a>
+                            <a href="{% url 'App:main_formulaires' %}" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 hover:shadow-lg smooth-transition font-semibold text-center">
+                                Inscription
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <!-- Messages -->
+    {% if messages %}
+    <div id="messagesContainer" class="fixed top-20 left-4 right-4 z-50">
+        {% for message in messages %}
+        <div class="message-alert mb-2 p-4 rounded-lg shadow-lg transition-opacity duration-500 {% if message.tags == 'error' %}border{% elif message.tags == 'warning' %}border{% elif message.tags == 'success' %}border{% else %}border{% endif %}" style="{% if message.tags == 'error' %}background: rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.4); color: #fee2e2;{% elif message.tags == 'warning' %}background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.4); color: #fef3c7;{% elif message.tags == 'success' %}background: rgba(47, 231, 209, 0.15); border-color: rgba(47, 231, 209, 0.4); color: #eaf6f3;{% else %}background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.4); color: #dbeafe;{% endif %}">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    {% if message.tags == 'error' %}
+                    <i class="fas fa-exclamation-circle mr-2" style="color: #fca5a5;"></i>
+                    {% elif message.tags == 'warning' %}
+                    <i class="fas fa-exclamation-triangle mr-2" style="color: #fcd34d;"></i>
+                    {% elif message.tags == 'success' %}
+                    <i class="fas fa-check-circle mr-2" style="color: #2fe7d1;"></i>
+                    {% else %}
+                    <i class="fas fa-info-circle mr-2" style="color: #93c5fd;"></i>
+                    {% endif %}
+                    <span class="font-medium">{{ message }}</span>
+                </div>
+                <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-lg font-bold hover:opacity-70 transition">&times;</button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <script>
+        // Auto-hide messages after 2 seconds
+        document.addEventListener('DOMContentLoaded', function() {
+            const messageAlerts = document.querySelectorAll('.message-alert');
+            messageAlerts.forEach(function(alert) {
+                setTimeout(function() {
+                    // Fade out effect
+                    alert.style.opacity = '0';
+                    // Remove from DOM after fade out
+                    setTimeout(function() {
+                        alert.remove();
+                        // Remove container if no more messages
+                        const container = document.getElementById('messagesContainer');
+                        if (container && container.children.length === 0) {
+                            container.remove();
+                        }
+                    }, 500); // Wait for fade out animation
+                }, 2000); // Wait 2 seconds before starting fade
+            });
+        });
+    </script>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="pt-20">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-24 mt-20">
+        <div class="container mx-auto px-4">
+            <!-- Main Footer Content -->
+            <div class="grid grid-cols-1 md:grid-cols-[1fr_2fr_1fr] items-center mb-16 gap-4">
+                <!-- Logo and Brand - Left -->
+                <div class="flex items-center justify-start space-x-3 mb-4 md:mb-0">
+                   
+                    <span class="text-2xl font-bold glow-text">Les Éclaireurs</span>
+                </div>
+                
+                <!-- Quote - Center -->
+                <div class="text-center mb-4 md:mb-0 mx-auto px-4 w-full">
+                    <p class="text-gray-300 italic text-lg md:text-xl font-bold">
+                        « La musique est une mathématique sonore ; la mathématique, une musique silencieuse. »
+                    </p>
+                    <p class="text-gray-400 text-sm mt-2">Edouard Herriot</p>
+                </div>
+                
+                <!-- Social Media - Right -->
+                <div class="flex items-center justify-end space-x-4">
+                    <a href="https://www.instagram.com/leseclaireurs_france/" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary smooth-transition transition-all duration-300" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://www.linkedin.com/company/les-eclaireurs-france/?viewAsMember=true" target="_blank" rel="noopener noreferrer" class="w-12 h-12 bg-gray-800 rounded-full flex items-center justify-center hover:bg-primary smooth-transition transition-all duration-300" aria-label="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Bottom Section -->
+            <div class="border-t border-gray-800 pt-12 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm mb-4 md:mb-0">
+                    © 2025 Les Éclaireurs. Tous droits réservés.
+                </p>
+                <div class="flex flex-wrap justify-center gap-4 md:gap-6 text-sm">
+                    <a href="#mentions-legales" class="text-gray-400 hover:text-secondary smooth-transition">Mentions légales</a>
+                    <a href="#politique-confidentialite" class="text-gray-400 hover:text-secondary smooth-transition">Politique de confidentialité</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Mobile Menu Toggle Script -->
+    <script>
+        document.getElementById('mobile-menu-btn').addEventListener('click', function() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', function() {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        });
+        
+        // Add scroll effect to header
+        window.addEventListener('scroll', function() {
+            const header = document.querySelector('header');
+            if (window.scrollY > 50) {
+                header.classList.add('shadow-lg');
+            } else {
+                header.classList.remove('shadow-lg');
+            }
+        });
+        
+        // Handle hash navigation from other pages
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if there's a hash in the URL
+            if (window.location.hash) {
+                // Wait a bit for the page to fully load
+                setTimeout(function() {
+                    const targetId = window.location.hash;
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        // Smooth scroll to the target element with offset
+                        targetElement.scrollIntoView({
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                }, 100);
+            }
+        });
+        
+        // Magic Wand Cursor Effect
+        const cursor = document.querySelector('.custom-cursor');
+        const cursorGlow = document.querySelector('.cursor-glow');
+        let sparkleInterval;
+        let lastSparkleTime = 0;
+        
+        // Update cursor position
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top = e.clientY + 'px';
+            
+            // Create sparkles periodically (but not too frequently)
+            const now = Date.now();
+            if (now - lastSparkleTime > 100) {
+                createSparkle(e.clientX, e.clientY);
+                lastSparkleTime = now;
+            }
+        });
+        
+        // Add active glow on click
+        document.addEventListener('mousedown', () => {
+            cursor.classList.add('active');
+        });
+        
+        document.addEventListener('mouseup', () => {
+            cursor.classList.remove('active');
+        });
+        
+        // Create sparkle function
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'cursor-sparkle';
+            
+            // Random offset for sparkle position
+            const offsetX = (Math.random() - 0.5) * 30;
+            const offsetY = (Math.random() - 0.5) * 30;
+            
+            sparkle.style.left = (x + offsetX) + 'px';
+            sparkle.style.top = (y + offsetY) + 'px';
+            
+            document.body.appendChild(sparkle);
+            
+            // Remove sparkle after animation
+            setTimeout(() => {
+                sparkle.remove();
+            }, 1000);
+        }
+        
+        // Create initial sparkles on page load
+        setTimeout(() => {
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    createSparkle(window.innerWidth / 2, window.innerHeight / 2);
+                }, i * 100);
+            }
+        }, 500);
+        
+        // Floating Particles Animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 20;
+            const animations = ['float1', 'float2', 'float3', 'float4', 'float5'];
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                
+                // Random position
+                const size = Math.random() * 6 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                
+                // Random animation type
+                const randomAnimation = animations[Math.floor(Math.random() * animations.length)];
+                
+                // Random duration (between 3s and 8s)
+                const duration = Math.random() * 5 + 3;
+                
+                // Random delay
+                const delay = Math.random() * 5;
+                
+                // Apply animation with random properties
+                particle.style.animation = `${randomAnimation} ${duration}s infinite ease-in-out ${delay}s`;
+                
+                particlesContainer.appendChild(particle);
+            }
+        });
+    </script>
+    
+    <!-- Flatpickr JS -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/fr.js"></script>
+    <script>
+        // Auto-initialize Flatpickr on all date and datetime inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateInputs = document.querySelectorAll('input[type="date"]');
+            const datetimeInputs = document.querySelectorAll('input[type="datetime-local"]');
+            
+            // Handle date inputs
+            dateInputs.forEach(function(input) {
+                // Hide original input
+                input.style.display = 'none';
+                
+                // Get the input name to determine date range
+                const inputName = input.getAttribute('name') || '';
+                const isWorkshopDate = inputName.includes('start_date') || inputName.includes('end_date') || inputName.includes('partnership_date');
+                const isBirthDate = inputName.includes('birth') || inputName.includes('naissance');
+                
+                // Configure Flatpickr options
+                const options = {
+                    locale: "fr",
+                    dateFormat: "Y-m-d",
+                    altInput: true,
+                    altFormat: "d/m/Y",
+                    allowInput: true,
+                    disableMobile: false,
+                    animate: true,
+                    monthSelectorType: "dropdown",
+                    prevArrow: '<i class="fas fa-chevron-left"></i>',
+                    nextArrow: '<i class="fas fa-chevron-right"></i>',
+                    onReady: function(selectedDates, dateStr, instance) {
+                        // Style the alt input to match form controls
+                        instance.altInput.classList.add('form-control');
+                    }
+                };
+                
+                // Set date constraints based on input type
+                if (isBirthDate) {
+                    options.maxDate = "today";
+                    options.yearRange = [1950, new Date().getFullYear()];
+                } else if (!isWorkshopDate) {
+                    options.maxDate = "today";
+                    options.yearRange = [1990, new Date().getFullYear()];
+                }
+                
+                // Initialize Flatpickr
+                flatpickr(input, options);
+            });
+            
+            // Handle datetime inputs (for workshops)
+            datetimeInputs.forEach(function(input) {
+                // Hide original input
+                input.style.display = 'none';
+                
+                // Configure Flatpickr options with time picker
+                const options = {
+                    locale: "fr",
+                    enableTime: true,
+                    time_24hr: true,
+                    dateFormat: "Y-m-d H:i",
+                    altInput: true,
+                    altFormat: "d/m/Y H:i",
+                    allowInput: true,
+                    disableMobile: false,
+                    animate: true,
+                    monthSelectorType: "dropdown",
+                    prevArrow: '<i class="fas fa-chevron-left"></i>',
+                    nextArrow: '<i class="fas fa-chevron-right"></i>',
+                    onReady: function(selectedDates, dateStr, instance) {
+                        // Style the alt input to match form controls
+                        instance.altInput.classList.add('form-control');
+                    }
+                };
+                
+                // Initialize Flatpickr
+                flatpickr(input, options);
+            });
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+

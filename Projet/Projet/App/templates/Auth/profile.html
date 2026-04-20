@@ -1,0 +1,227 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}Mon Profil - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/formulaires-dark.css' %}">
+<style>
+    /* Style for editable input fields to distinguish them from read-only fields */
+    .form-section input[type="text"],
+    .form-section input[type="tel"] {
+        background: rgba(47, 231, 209, 0.1) !important;
+        border-color: rgba(47, 231, 209, 0.4) !important;
+        transition: all 0.3s ease;
+    }
+    
+    .form-section input[type="text"]:focus,
+    .form-section input[type="tel"]:focus {
+        background: rgba(47, 231, 209, 0.15) !important;
+        border-color: rgba(47, 231, 209, 0.6) !important;
+        box-shadow: 0 0 0 3px rgba(47, 231, 209, 0.2) !important;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="inscription-container">
+    <a href="{% if user.role == 'admin' %}{% url 'App:admin_dashboard' %}{% elif user.role == 'parent' %}{% url 'App:parent_dashboard' %}{% elif user.role == 'intervenant' %}{% url 'App:intervenant_dashboard' %}{% elif user.role == 'professeur' %}{% url 'App:professeur_dashboard' %}{% else %}{% url 'App:home' %}{% endif %}" 
+       class="back-button">
+        <i class="fas fa-arrow-left"></i> Retour au tableau de bord
+    </a>
+    
+    <!-- Profile Header -->
+    <div class="text-center mb-4">
+        <div class="mb-3">
+            <div style="display: inline-flex; align-items: center; justify-content: center; width: 100px; height: 100px; background: linear-gradient(135deg, #2fe7d1, #40bfff); border-radius: 50%; box-shadow: 0 8px 20px rgba(47, 231, 209, 0.4);">
+                <span style="color: #042034; font-size: 2.5rem; font-weight: 700;">
+                    {{ user.first_name|first|default:'U' }}{{ user.last_name|first|default:'' }}
+                </span>
+            </div>
+        </div>
+        <h1 class="display-4 text-primary">Mon Profil</h1>
+        <p class="lead">{{ user.get_role_display }}</p>
+        <span style="display: inline-block; padding: 0.5rem 1rem; border-radius: 20px; font-size: 0.875rem; font-weight: 600; {% if user.is_validated %}background: rgba(39, 174, 96, 0.2); border: 1px solid rgba(39, 174, 96, 0.4); color: #2fe7d1;{% else %}background: rgba(234, 179, 8, 0.2); border: 1px solid rgba(234, 179, 8, 0.4); color: #eab308;{% endif %}">
+            {% if user.is_validated %}
+                <i class="fas fa-check-circle mr-1"></i>Compte validé
+            {% else %}
+                <i class="fas fa-clock mr-1"></i>En attente de validation
+            {% endif %}
+        </span>
+    </div>
+
+    <!-- Account Information Section (Read-only) -->
+    <div class="form-section" style="margin-bottom: 2rem;">
+        <h3><i class="fas fa-info-circle"></i> Informations du compte</h3>
+        
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Rôle</label>
+                    <div class="form-control" style="background: rgba(47, 231, 209, 0.05); border-color: rgba(47, 231, 209, 0.3); cursor: default;">
+                        {{ user.get_role_display }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="form-control" style="background: rgba(47, 231, 209, 0.05); border-color: rgba(47, 231, 209, 0.3); cursor: default;">
+                        {{ user.email|default:"Non renseigné" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Date de création</label>
+                    <div class="form-control" style="background: rgba(47, 231, 209, 0.05); border-color: rgba(47, 231, 209, 0.3); cursor: default;">
+                        {{ user.created_at|date:"d/m/Y" }}
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label>Statut du compte</label>
+                    <div class="form-control" style="background: rgba(47, 231, 209, 0.05); border-color: rgba(47, 231, 209, 0.3); cursor: default; {% if user.is_active %}color: #2fe7d1;{% else %}color: #ff7f7f;{% endif %}">
+                        {% if user.is_active %}
+                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i> Actif
+                        {% else %}
+                            <i class="fas fa-circle" style="font-size: 0.5rem;"></i> Inactif
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Update Profile Form -->
+    <div class="form-section">
+        <h3><i class="fas fa-edit"></i> Modifier mes informations</h3>
+
+        {% if messages %}
+            {% for message in messages %}
+            <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-error{% endif %}">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} mr-2"></i>
+                {{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            
+            <!-- Username Row -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Nom d'utilisateur actuel</label>
+                        <div class="form-control" style="background: rgba(255, 255, 255, 0.02); border-color: rgba(160, 230, 220, 0.15); cursor: default;">
+                            {{ user.username }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}">Modifier le nom d'utilisateur <span class="required">*</span></label>
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.username.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label style="opacity: 0;">Espace</label>
+                        <div class="form-control" style="background: transparent; border: none; box-shadow: none; padding: 0;">
+                            <small class="text-muted" style="color: rgba(160, 230, 220, 0.6);">
+                                <i class="fas fa-info-circle"></i> Vous pouvez vous connecter avec votre nom d'utilisateur ou votre email
+                            </small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- First Name and Last Name Row -->
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Prénom actuel</label>
+                        <div class="form-control" style="background: rgba(255, 255, 255, 0.02); border-color: rgba(160, 230, 220, 0.15); cursor: default;">
+                            {{ user.first_name|default:"Non renseigné" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="{{ form.first_name.id_for_label }}">Modifier <span class="required">*</span></label>
+                        {{ form.first_name }}
+                        {% if form.first_name.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.first_name.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label>Nom actuel</label>
+                        <div class="form-control" style="background: rgba(255, 255, 255, 0.02); border-color: rgba(160, 230, 220, 0.15); cursor: default;">
+                            {{ user.last_name|default:"Non renseigné" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label for="{{ form.last_name.id_for_label }}">Modifier <span class="required">*</span></label>
+                        {{ form.last_name }}
+                        {% if form.last_name.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.last_name.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phone Row -->
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label>Téléphone actuel</label>
+                        <div class="form-control" style="background: rgba(255, 255, 255, 0.02); border-color: rgba(160, 230, 220, 0.15); cursor: default;">
+                            {{ user.phone|default:"Non renseigné" }}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="{{ form.phone.id_for_label }}">Modifier le téléphone</label>
+                        {{ form.phone }}
+                        {% if form.phone.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.phone.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-save mr-2"></i>Enregistrer les modifications
+            </button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.body.classList.add('dark-theme');
+</script>
+{% endblock %}

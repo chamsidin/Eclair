@@ -1,0 +1,51 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}Don annulé - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/formulaires-dark.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="inscription-container">
+    <div class="text-center">
+        <div class="mb-4">
+            <i class="fas fa-times-circle text-warning" style="font-size: 5rem;"></i>
+        </div>
+        
+        <h1 class="display-4 text-primary mb-4">Don annulé</h1>
+        <p class="lead mb-4">
+            Votre don n'a pas été effectué. Aucun montant n'a été débité.
+        </p>
+        
+        <div class="alert alert-warning">
+            <i class="fas fa-info-circle"></i>
+            Si vous avez rencontré un problème pendant le processus de paiement, 
+            n'hésitez pas à réessayer ou à nous contacter.
+        </div>
+        
+        <div class="mt-4">
+            <a href="{% url 'App:donation_form' %}" class="btn-submit mr-3">
+                <i class="fas fa-heart"></i> Réessayer
+            </a>
+            <a href="{% url 'App:home' %}" class="btn btn-secondary">
+                <i class="fas fa-home"></i> Retour à l'accueil
+            </a>
+        </div>
+        
+        <p class="mt-4 text-muted">
+            Besoin d'aide ? Contactez-nous à <a href="mailto:contact@eclaireurs.fr">contact@eclaireurs.fr</a>
+        </p>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Apply dark theme to body
+    document.body.classList.add('dark-theme');
+</script>
+{% endblock %}
+

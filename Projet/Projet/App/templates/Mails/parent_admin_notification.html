@@ -1,0 +1,46 @@
+{% extends 'Mails/base_email.html' %}
+
+{% block email_content %}
+    <div class="header">
+        <h2>Nouvelle Demande d'Inscription Parent</h2>
+    </div>
+    
+    <div class="content">
+        <p>Vous avez reçu une nouvelle demande d'inscription depuis le formulaire parent du site Les Éclaireurs.</p>
+        
+        <div class="info-box">
+            <p><span class="label">Parent :</span> {{ parent_first_name }} {{ parent_last_name }}</p>
+            <p><span class="label">Email :</span> {{ parent_email }}</p>
+            <p><span class="label">Téléphone :</span> {{ parent_phone }}</p>
+        </div>
+        
+        <div class="info-box">
+            <p><span class="label">Élève(s) :</span></p>
+            <ul>
+            {% for student in students %}
+                <li>
+                    <strong>{{ student.first_name }} {{ student.last_name }}</strong><br>
+                    Né(e) le {{ student.birth_date }}<br>
+                    Établissement: {{ student.establishment_name|default:school_name }}
+                </li>
+            {% endfor %}
+            </ul>
+        </div>
+        
+        <div class="message-box">
+            <p><span class="label">Motivation :</span></p>
+            <p>{{ motivation|linebreaks }}</p>
+        </div>
+        
+        <p style="margin-top: 20px;">
+            <strong>Pour répondre :</strong> Répondez directement à cet email ou contactez le parent à l'adresse : 
+            <a href="mailto:{{ parent_email }}">{{ parent_email }}</a>
+        </p>
+    </div>
+    
+    <div class="footer">
+        <p>Les Éclaireurs - Plateforme d'accompagnement scolaire</p>
+        <p>Cet email a été envoyé automatiquement depuis le formulaire d'inscription parent.</p>
+    </div>
+{% endblock %}
+

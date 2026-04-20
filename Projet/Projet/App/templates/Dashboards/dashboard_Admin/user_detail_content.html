@@ -1,0 +1,132 @@
+<div class="space-y-6">
+    <!-- User Header -->
+    <div class="text-center mb-6">
+        <div class="w-24 h-24 rounded-full mx-auto mb-4 flex items-center justify-center text-3xl font-bold" style="background: linear-gradient(135deg, #2fe7d1, #40bfff); color: #042034;">
+            {{ user.first_name|first }}{{ user.last_name|first }}
+        </div>
+        <h3 class="text-2xl font-bold mb-2" style="color: #eaf6f3;">{{ user.first_name }} {{ user.last_name }}</h3>
+        <p class="text-sm mb-3" style="color: rgba(234, 246, 243, 0.72);">@{{ user.username }}</p>
+        
+        <!-- Role Badge -->
+        {% if user.role == 'admin' %}
+        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full" style="background: rgba(149, 128, 255, 0.18); color: #b69cff; border: 1px solid rgba(149, 128, 255, 0.3);">
+            {{ user.get_role_display }}
+        </span>
+        {% elif user.role == 'intervenant' %}
+        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full" style="background: rgba(64, 191, 255, 0.18); color: #40bfff; border: 1px solid rgba(64, 191, 255, 0.3);">
+            {{ user.get_role_display }}
+        </span>
+        {% elif user.role == 'professeur' %}
+        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full" style="background: rgba(47, 231, 209, 0.18); color: #2fe7d1; border: 1px solid rgba(47, 231, 209, 0.28);">
+            {{ user.get_role_display }}
+        </span>
+        {% else %}
+        <span class="text-xs font-medium px-2.5 py-0.5 rounded-full" style="background: rgba(255, 255, 255, 0.12); color: rgba(234, 246, 243, 0.82); border: 1px solid rgba(255, 255, 255, 0.18);">
+            {{ user.get_role_display }}
+        </span>
+        {% endif %}
+    </div>
+    
+    <!-- User Information Section -->
+    <div class="rounded-lg p-6" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(160, 230, 220, 0.12);">
+        <h4 class="text-lg font-semibold mb-4 flex items-center" style="color: #eaf6f3;">
+            <i class="fas fa-info-circle mr-2" style="color: #2fe7d1;"></i>
+            Informations Générales
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm font-medium mb-1" style="color: rgba(234, 246, 243, 0.65);">
+                    <i class="fas fa-envelope mr-2" style="color: #40bfff;"></i>Email
+                </p>
+                <p class="text-base" style="color: #eaf6f3;">
+                    <a href="mailto:{{ user.email }}" style="color: #2fe7d1; text-decoration: underline;">
+                        {{ user.email }}
+                    </a>
+                </p>
+            </div>
+            <div>
+                <p class="text-sm font-medium mb-1" style="color: rgba(234, 246, 243, 0.65);">
+                    <i class="fas fa-phone mr-2" style="color: #40bfff;"></i>Téléphone
+                </p>
+                <p class="text-base" style="color: #eaf6f3;">
+                    {% if user.phone %}
+                    <a href="tel:{{ user.phone }}" style="color: #2fe7d1; text-decoration: underline;">
+                        {{ user.phone }}
+                    </a>
+                    {% else %}
+                    Non renseigné
+                    {% endif %}
+                </p>
+            </div>
+            <div>
+                <p class="text-sm font-medium mb-1" style="color: rgba(234, 246, 243, 0.65);">
+                    <i class="fas fa-calendar-plus mr-2" style="color: #40bfff;"></i>Date de création
+                </p>
+                <p class="text-base" style="color: #eaf6f3;">{{ user.created_at|date:"d/m/Y à H:i" }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium mb-1" style="color: rgba(234, 246, 243, 0.65);">
+                    <i class="fas fa-sign-in-alt mr-2" style="color: #40bfff;"></i>Dernière connexion
+                </p>
+                <p class="text-base" style="color: #eaf6f3;">{{ user.last_login|date:"d/m/Y à H:i"|default:"Jamais" }}</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Status Section -->
+    <div class="grid grid-cols-2 gap-4">
+        <div class="rounded-lg p-4 flex items-center justify-center" style="background: {% if user.is_validated %}rgba(47, 231, 209, 0.08){% else %}rgba(255, 210, 73, 0.08){% endif %}; border: 1px solid {% if user.is_validated %}rgba(47, 231, 209, 0.2){% else %}rgba(255, 210, 73, 0.2){% endif %};">
+            <i class="fas {% if user.is_validated %}fa-check-circle{% else %}fa-clock{% endif %} text-2xl mr-3" style="color: {% if user.is_validated %}#2fe7d1{% else %}#ffd249{% endif %};"></i>
+            <div>
+                <p class="text-xs font-medium" style="color: rgba(234, 246, 243, 0.65);">Validation</p>
+                <p class="text-base font-semibold" style="color: #eaf6f3;">{% if user.is_validated %}Validé{% else %}En attente{% endif %}</p>
+            </div>
+        </div>
+        <div class="rounded-lg p-4 flex items-center justify-center" style="background: {% if user.is_active %}rgba(47, 231, 209, 0.08){% else %}rgba(255, 100, 100, 0.08){% endif %}; border: 1px solid {% if user.is_active %}rgba(47, 231, 209, 0.2){% else %}rgba(255, 100, 100, 0.2){% endif %};">
+            <i class="fas {% if user.is_active %}fa-toggle-on{% else %}fa-toggle-off{% endif %} text-2xl mr-3" style="color: {% if user.is_active %}#2fe7d1{% else %}#ff6464{% endif %};"></i>
+            <div>
+                <p class="text-xs font-medium" style="color: rgba(234, 246, 243, 0.65);">Compte</p>
+                <p class="text-base font-semibold" style="color: #eaf6f3;">{% if user.is_active %}Actif{% else %}Inactif{% endif %}</p>
+            </div>
+        </div>
+    </div>
+    
+    {% if user.role == 'parent' and children %}
+    <!-- Children Section for Parents -->
+    <div class="rounded-lg p-6" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(160, 230, 220, 0.12);">
+        <h4 class="text-lg font-semibold mb-4 flex items-center" style="color: #eaf6f3;">
+            <i class="fas fa-children mr-2" style="color: #2fe7d1;"></i>
+            Enfants ({{ children.count }})
+        </h4>
+        <div class="space-y-3">
+            {% for child in children %}
+            <div class="rounded-lg p-4" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(160, 230, 220, 0.08);">
+                <div class="flex items-center justify-between">
+                    <div class="flex-1">
+                        <p class="font-semibold mb-1" style="color: #eaf6f3;">
+                            <i class="fas fa-child mr-2" style="color: #40bfff;"></i>
+                            {{ child.first_name }} {{ child.last_name }}
+                        </p>
+                        <p class="text-sm" style="color: rgba(234, 246, 243, 0.72);">
+                            <i class="fas fa-birthday-cake mr-1 text-xs"></i>
+                            {{ child.birth_date|date:"d/m/Y" }}
+                        </p>
+                        <p class="text-sm" style="color: rgba(234, 246, 243, 0.72);">
+                            <i class="fas fa-school mr-1 text-xs"></i>
+                            {{ child.establishment.name }}
+                        </p>
+                        {% if child.classe %}
+                        <p class="text-sm" style="color: rgba(234, 246, 243, 0.72);">
+                            <i class="fas fa-graduation-cap mr-1 text-xs"></i>
+                            {{ child.classe }}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+

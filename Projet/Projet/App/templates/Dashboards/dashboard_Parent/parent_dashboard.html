@@ -1,0 +1,606 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/parent-dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="parent-dashboard min-h-screen py-8">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Tableau de bord Parent</h1>
+                    <p class="text-gray-600">Suivez les activités de vos enfants</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="{% url 'App:donation_form' %}" class="px-6 py-3 opening-hours-card rounded-lg hover:shadow-2xl smooth-transition font-semibold text-center text-base" style="color: #042034 !important;">
+                        <i class="fas fa-heart mr-2"></i>Faire un Don
+                    </a>
+                    <div class="text-right">
+                        <p class="text-sm text-gray-500">Connecté en tant que</p>
+                        <p class="font-semibold text-primary">{{ user.get_full_name|default:user.username }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notifications -->
+        {% if notifications %}
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div class="flex items-center">
+                <i class="fas fa-bell text-blue-600 mr-3"></i>
+                <div>
+                    <h3 class="font-semibold text-blue-900">Notifications</h3>
+                    <ul class="text-sm text-blue-800 mt-1">
+                        {% for notification in notifications %}
+                        <li>• {{ notification }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- My Children & Attendance (Two column layout) -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- My Children -->
+            <div class="bg-white rounded-lg shadow-md p-6 workshop-container-parent">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900">Mes Enfants</h3>
+                    <button onclick="openAddChildModal()" 
+                            class="text-white px-4 py-2 rounded-lg transition-all flex items-center text-sm"
+                            style="background: linear-gradient(135deg, #7290e0, #6fafac);"
+                            onmouseover="this.style.background='linear-gradient(135deg, #8fa5ea, #85c4c1)'"
+                            onmouseout="this.style.background='linear-gradient(135deg, #7290e0, #6fafac)'">
+                        <i class="fas fa-plus mr-2"></i>
+                        Ajouter un enfant
+                    </button>
+                </div>
+                {% if children %}
+                <div class="grid grid-cols-1 gap-4 pt-2 pb-2">
+                    {% for child in children %}
+                    <div class="border border-gray-200 rounded-lg p-4 cursor-pointer" 
+                         onclick="openChildModal({{ child.id }})"
+                         style="transition: all 0.3s ease;">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="font-medium text-gray-900">{{ child.first_name }} {{ child.last_name }}</p>
+                                <p class="text-sm text-gray-600">{{ child.establishment.name }}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                    Inscrit
+                                </span>
+                                <i class="fas fa-eye text-sm mt-2 block" style="color: #2fe7d1;"></i>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-8">
+                    <i class="fas fa-child text-gray-400 text-4xl mb-4"></i>
+                    <p class="text-gray-500 mb-4">Aucun enfant inscrit</p>
+                    <p class="text-sm text-gray-400 mb-4">Commencez par ajouter votre premier enfant</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Attendance Sheets -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-clipboard-check text-primary mr-2"></i>
+                    Feuilles de Présence
+                </h3>
+                <div class="text-center py-8">
+                    <i class="fas fa-clipboard-list text-primary text-5xl mb-4"></i>
+                    <p class="text-gray-700 mb-4">Consultez les feuilles de présence de vos enfants</p>
+                    <p class="text-sm text-gray-500 mb-6">Suivez l'assiduité et les notes des intervenants</p>
+                    <a href="{% url 'App:parent_attendance_sheets' %}" 
+                       class="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors">
+                        <i class="fas fa-eye"></i>
+                        Voir les Présences
+                    </a>
+                </div>
+                {% if children %}
+                <div class="mt-4 p-4 bg-blue-50 rounded-lg">
+                    <div class="flex items-center text-sm text-blue-800">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        <span>Accédez aux présences par enfant ou par atelier</span>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Available Workshops & Current Enrollments -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Available Workshops -->
+            <div class="bg-white rounded-lg shadow-md p-6 workshop-container-parent">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-calendar-alt text-primary mr-2"></i>
+                    Ateliers Disponibles
+                </h3>
+                {% if available_workshops %}
+                <div class="space-y-3 max-h-96 overflow-y-auto pt-3 pb-3">
+                    {% for workshop in available_workshops %}
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="mb-3">
+                            <div class="flex items-start justify-between mb-2">
+                                <h4 class="font-semibold text-gray-900">{{ workshop.title }}</h4>
+                                {% if workshop.level %}
+                                <span class="bg-purple-100 text-purple-700 text-xs font-medium px-2.5 py-1 rounded-full ml-2">
+                                    Niveau: {{ workshop.level.name }}
+                                </span>
+                                {% endif %}
+                            </div>
+                            <p class="text-sm text-gray-600">{{ workshop.establishment.name }}</p>
+                            <p class="text-xs text-gray-500">{{ workshop.start_date|date:"d/m/Y H:i" }}</p>
+                        </div>
+                        <div class="mb-3">
+                            <p class="text-sm text-gray-700">{{ workshop.description|truncatewords:20 }}</p>
+                        </div>
+                        <div class="flex items-center justify-between">
+                            <span class="text-sm text-gray-500">
+                                <i class="fas fa-users mr-1"></i>
+                                {{ workshop.max_students }} places max
+                            </span>
+                            <div class="flex items-center gap-2">
+                                <button type="button" 
+                                        onclick="openWorkshopModal({{ workshop.id }})"
+                                        class="bg-blue-100 text-blue-600 px-3 py-1 rounded text-sm hover:bg-blue-200 transition-colors flex items-center gap-1">
+                                    <i class="fas fa-info-circle"></i>
+                                    Détails
+                                </button>
+                                {% if children %}
+                                <form method="post" action="{% url 'App:enroll_student' workshop.id %}" class="inline flex items-center gap-2">
+                                    {% csrf_token %}
+                                    <select name="student_id" class="text-sm border border-gray-300 rounded px-2 py-1">
+                                        <option value="">Choisir un enfant</option>
+                                        {% for child in children %}
+                                        <option value="{{ child.id }}">{{ child.first_name }} {{ child.last_name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                    <button type="submit" 
+                                            class="bg-primary text-white px-3 py-1 rounded text-sm hover:bg-primary-dark transition-colors">
+                                        Inscrire
+                                    </button>
+                                </form>
+                                {% else %}
+                                <span class="text-sm text-gray-500">Inscrivez d'abord un enfant</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-8">
+                    <i class="fas fa-calendar-times text-gray-400 text-4xl mb-4"></i>
+                    <p class="text-gray-500">Aucun atelier disponible pour le moment</p>
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Current Enrollments -->
+            <div class="bg-white rounded-lg shadow-md p-6 workshop-container-parent">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-user-check text-primary mr-2"></i>
+                    Inscriptions Actuelles
+                </h3>
+                {% if enrollments %}
+                <div class="space-y-3 max-h-96 overflow-y-auto pt-3 pb-3">
+                    {% for enrollment in enrollments %}
+                    <div class="border border-gray-200 rounded-lg p-4">
+                        <div class="flex items-start justify-between">
+                            <div class="flex-1">
+                                <p class="font-medium text-gray-900">{{ enrollment.workshop.title }}</p>
+                                <p class="text-sm text-gray-600">{{ enrollment.student.first_name }} {{ enrollment.student.last_name }}</p>
+                                <p class="text-xs text-gray-500">{{ enrollment.workshop.start_date|date:"d/m/Y H:i" }}</p>
+                                <div class="mt-2">
+                                    {% if enrollment.is_confirmed %}
+                                    <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        Confirmé
+                                    </span>
+                                    {% else %}
+                                    <span class="bg-yellow-100 text-yellow-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                                        En attente
+                                    </span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="ml-3 flex items-center gap-2">
+                                <button type="button" 
+                                        onclick="openWorkshopModal({{ enrollment.workshop.id }})"
+                                        class="bg-blue-100 text-blue-600 px-3 py-1 rounded text-sm hover:bg-blue-200 transition-colors flex items-center gap-1">
+                                    <i class="fas fa-info-circle"></i>
+                                    Détails
+                                </button>
+                                <form method="post" action="{% url 'App:unenroll_student' enrollment.id %}" 
+                                      onsubmit="return confirm('Êtes-vous sûr de vouloir désinscrire {{ enrollment.student.first_name }} de cet atelier ?');">
+                                    {% csrf_token %}
+                                    <button type="submit" 
+                                            class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm transition-colors flex items-center"
+                                            title="Désinscrire">
+                                        <i class="fas fa-user-times mr-1"></i>
+                                        Désinscrire
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-8">
+                    <i class="fas fa-calendar-plus text-gray-400 text-4xl mb-4"></i>
+                    <p class="text-gray-500">Aucune inscription active</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Shared Documents (Full Width, Under Ateliers Disponibles) -->
+        <div class="mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+                    <i class="fas fa-file-alt text-primary mr-2"></i>
+                    Documents Partagés
+                </h3>
+                {% if shared_documents %}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {% for document in shared_documents %}
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50 transition-colors">
+                        <div class="flex items-start justify-between">
+                            <div class="flex items-start flex-1">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3 flex-shrink-0">
+                                    {% if document.file.name|slice:"-3:" == 'pdf' %}
+                                    <i class="fas fa-file-pdf text-red-600"></i>
+                                    {% elif document.file.name|slice:"-3:" == 'doc' or document.file.name|slice:"-4:" == 'docx' %}
+                                    <i class="fas fa-file-word text-blue-600"></i>
+                                    {% elif document.file.name|slice:"-3:" == 'xls' or document.file.name|slice:"-4:" == 'xlsx' %}
+                                    <i class="fas fa-file-excel text-green-600"></i>
+                                    {% elif document.file.name|slice:"-3:" == 'jpg' or document.file.name|slice:"-3:" == 'png' %}
+                                    <i class="fas fa-file-image text-purple-600"></i>
+                                    {% else %}
+                                    <i class="fas fa-file text-gray-600"></i>
+                                    {% endif %}
+                                </div>
+                                <div class="flex-1">
+                                    <h4 class="font-medium text-gray-900 mb-1">{{ document.title }}</h4>
+                                    {% if document.description %}
+                                    <p class="text-xs text-gray-600 mb-1 italic">{{ document.description|truncatewords:15 }}</p>
+                                    {% endif %}
+                                    <p class="text-xs text-gray-500 mb-1">
+                                        <i class="fas fa-user mr-1"></i>{{ document.uploader.get_full_name|default:document.uploader.username }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 mb-1">
+                                        <i class="fas fa-calendar mr-1"></i>{{ document.uploaded_at|date:"d/m/Y" }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 mb-2">
+                                        <i class="fas fa-file-alt mr-1"></i>{{ document.get_document_type_display }} - {{ document.get_file_size_display }}
+                                    </p>
+                                    {% for workshop in document.workshops.all %}
+                                    <span class="inline-block mt-1 bg-indigo-100 text-indigo-800 text-xs font-medium px-2 py-0.5 rounded mr-1">
+                                        {{ workshop.title }}
+                                    </span>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="flex flex-col items-center space-y-2 ml-3">
+                                <a href="{% url 'App:download_document' document.id %}" 
+                                   class="text-primary hover:text-primary-dark transition-colors" 
+                                   title="Télécharger">
+                                    <i class="fas fa-download"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="text-center py-8">
+                    <i class="fas fa-folder-open text-gray-400 text-4xl mb-4"></i>
+                    <p class="text-gray-500 mb-2">Aucun document disponible</p>
+                    <p class="text-sm text-gray-400">Les intervenants partageront des documents pour les ateliers de vos enfants</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        
+    </div>
+</div>
+
+<!-- Include Child Detail Modal -->
+{% include 'Dashboards/dashboard_Parent/child_detail_modal.html' %}
+
+<!-- Include Workshop Detail Modal -->
+{% include 'Dashboards/dashboard_Parent/workshop_detail_modal.html' %}
+
+<!-- Add Child Modal -->
+<div id="addChildModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-center justify-center p-4">
+    <div class="rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto" style="background: #1a1d29;">
+        <div class="sticky top-0 z-10 flex items-center justify-between p-6 border-b" style="background: #1a1d29; border-color: rgba(160, 230, 220, 0.12);">
+            <h2 class="text-2xl font-bold" style="color: #eaf6f3;">
+                <i class="fas fa-user-plus mr-2" style="color: #2fe7d1;"></i>
+                Ajouter un enfant
+            </h2>
+            <button onclick="closeAddChildModal()" class="text-gray-400 hover:text-gray-200 transition-colors">
+                <i class="fas fa-times text-2xl"></i>
+            </button>
+        </div>
+        
+        <div class="p-6">
+            <style>
+                /* Ensure all Flatpickr inputs match the form styling */
+                #childBirthDate,
+                #childBirthDate.flatpickr-input,
+                .flatpickr-input[readonly],
+                input[name="birth_date"] {
+                    background: rgba(255, 255, 255, 0.05) !important;
+                    border-color: rgba(160, 230, 220, 0.2) !important;
+                    color: #eaf6f3 !important;
+                }
+                #childBirthDate::placeholder,
+                .flatpickr-input::placeholder {
+                    color: rgba(234, 246, 243, 0.5) !important;
+                }
+            </style>
+            <form id="addChildForm" method="POST" action="{% url 'App:add_child' %}">
+                {% csrf_token %}
+                
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2" style="color: rgba(234, 246, 243, 0.85);">
+                                Prénom <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="first_name" required
+                                   class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2"
+                                   style="background: rgba(255, 255, 255, 0.05); border-color: rgba(160, 230, 220, 0.2); color: #eaf6f3;"
+                                   placeholder="Prénom de l'enfant">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2" style="color: rgba(234, 246, 243, 0.85);">
+                                Nom <span class="text-red-500">*</span>
+                            </label>
+                            <input type="text" name="last_name" required
+                                   class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2"
+                                   style="background: rgba(255, 255, 255, 0.05); border-color: rgba(160, 230, 220, 0.2); color: #eaf6f3;"
+                                   placeholder="Nom de l'enfant">
+                        </div>
+                    </div>
+                    
+                    <div style="display: none;">
+                        <label class="block text-sm font-medium mb-2" style="color: rgba(234, 246, 243, 0.85);">
+                            Date de naissance
+                        </label>
+                        <input type="text" name="birth_date" id="childBirthDate"
+                               class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2 flatpickr-input"
+                               style="background: rgba(255, 255, 255, 0.05); border-color: rgba(160, 230, 220, 0.2); color: #eaf6f3;"
+                               placeholder="Sélectionnez une date"
+                               value="2010-01-01">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2" style="color: rgba(234, 246, 243, 0.85);">
+                            Établissement scolaire <span class="text-red-500">*</span>
+                        </label>
+                        <select name="establishment" required
+                                class="w-full px-4 py-2 rounded-lg border focus:outline-none focus:ring-2"
+                                style="background: rgba(255, 255, 255, 0.05); border-color: rgba(160, 230, 220, 0.2); color: #eaf6f3;">
+                            <option value="" style="background: #1a1d29;">Sélectionnez un établissement</option>
+                            {% for establishment in establishments %}
+                            <option value="{{ establishment.id }}" style="background: #1a1d29;">{{ establishment.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="flex gap-4 mt-6">
+                    <button type="submit" 
+                            class="flex-1 py-3 px-6 rounded-lg font-semibold transition-all"
+                            style="background: linear-gradient(135deg, rgba(47, 231, 209, 0.2), rgba(47, 231, 209, 0.15)); border: 1px solid rgba(47, 231, 209, 0.3); color: #2fe7d1;">
+                        <i class="fas fa-check mr-2"></i>
+                        Ajouter l'enfant
+                    </button>
+                    <button type="button" onclick="closeAddChildModal()"
+                            class="flex-1 py-3 px-6 rounded-lg font-semibold transition-all"
+                            style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(160, 230, 220, 0.2); color: rgba(234, 246, 243, 0.85);">
+                        <i class="fas fa-times mr-2"></i>
+                        Annuler
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.body.classList.add('dark-theme');
+
+    function openChildModal(childId) {
+        const modal = document.getElementById('childModal');
+        const modalContent = document.getElementById('childModalContent');
+        
+        // Show loading state
+        modalContent.innerHTML = `
+            <div class="text-center py-8">
+                <i class="fas fa-spinner fa-spin text-3xl" style="color: #2fe7d1;"></i>
+                <p class="mt-4" style="color: rgba(234, 246, 243, 0.72);">Chargement...</p>
+            </div>
+        `;
+        
+        // Show the modal
+        modal.classList.remove('hidden');
+        
+        // Fetch child details from server
+        fetch(`/ajax/child-details/${childId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    modalContent.innerHTML = data.html;
+                } else {
+                    modalContent.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-exclamation-triangle text-3xl" style="color: #ff6b6b;"></i>
+                            <p class="mt-4" style="color: rgba(234, 246, 243, 0.72);">Erreur: ${data.error || 'Impossible de charger les détails'}</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching child details:', error);
+                modalContent.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-exclamation-triangle text-3xl" style="color: #ff6b6b;"></i>
+                        <p class="mt-4" style="color: rgba(234, 246, 243, 0.72);">Erreur lors du chargement des détails</p>
+                    </div>
+                `;
+            });
+    }
+    
+    function closeChildModal() {
+        const modal = document.getElementById('childModal');
+        modal.classList.add('hidden');
+    }
+    
+    // Close modal when clicking outside
+    document.getElementById('childModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeChildModal();
+        }
+    });
+    
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeChildModal();
+            closeWorkshopModal();
+        }
+    });
+
+    // Workshop Modal Functions
+    function openWorkshopModal(workshopId) {
+        const modal = document.getElementById('workshopModal');
+        const modalContent = document.getElementById('workshopModalContent');
+        
+        // Show loading state
+        modalContent.innerHTML = `
+            <div class="text-center py-8">
+                <i class="fas fa-spinner fa-spin text-3xl" style="color: #2fe7d1;"></i>
+                <p class="mt-4" style="color: rgba(234, 246, 243, 0.72);">Chargement...</p>
+            </div>
+        `;
+        
+        // Open modal immediately
+        modal.classList.remove('hidden');
+        
+        // Fetch workshop details via AJAX
+        fetch(`{% url 'App:get_workshop_details' 0 %}`.replace('0', workshopId))
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    modalContent.innerHTML = data.html;
+                } else {
+                    modalContent.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-exclamation-triangle text-3xl mb-4" style="color: #ff6464;"></i>
+                            <p style="color: rgba(234, 246, 243, 0.72);">${data.error || 'Erreur lors du chargement des détails'}</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching workshop details:', error);
+                modalContent.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-exclamation-triangle text-3xl mb-4" style="color: #ff6464;"></i>
+                        <p style="color: rgba(234, 246, 243, 0.72);">Erreur de connexion au serveur</p>
+                    </div>
+                `;
+            });
+    }
+    
+    function closeWorkshopModal() {
+        const modal = document.getElementById('workshopModal');
+        modal.classList.add('hidden');
+    }
+    
+    // Close workshop modal when clicking outside
+    document.getElementById('workshopModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeWorkshopModal();
+        }
+    });
+
+    // Auto-refresh notifications every 60 seconds
+    setInterval(function() {
+        // You can add AJAX calls here to refresh notifications
+        console.log('Refreshing parent dashboard...');
+    }, 60000);
+
+    // Add Child Modal Functions
+    function openAddChildModal() {
+        const modal = document.getElementById('addChildModal');
+        modal.classList.remove('hidden');
+        
+        // Initialize Flatpickr for birth date if not already initialized
+        const birthDateInput = document.getElementById('childBirthDate');
+        if (birthDateInput && typeof flatpickr !== 'undefined' && !birthDateInput._flatpickr) {
+            const fp = flatpickr(birthDateInput, {
+                locale: 'fr',
+                dateFormat: 'Y-m-d',
+                maxDate: 'today',
+                altInput: true,
+                altFormat: 'd/m/Y',
+                allowInput: true,
+                disableMobile: false,
+                onReady: function(selectedDates, dateStr, instance) {
+                    // Apply styles to the alternative input
+                    if (instance.altInput) {
+                        instance.altInput.style.background = 'rgba(255, 255, 255, 0.05)';
+                        instance.altInput.style.borderColor = 'rgba(160, 230, 220, 0.2)';
+                        instance.altInput.style.color = '#eaf6f3';
+                    }
+                }
+            });
+        }
+    }
+    
+    function closeAddChildModal() {
+        const modal = document.getElementById('addChildModal');
+        modal.classList.add('hidden');
+        // Reset form
+        document.getElementById('addChildForm').reset();
+    }
+    
+    // Close add child modal when clicking outside
+    document.getElementById('addChildModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeAddChildModal();
+        }
+    });
+    
+    // Update Escape key handler to close add child modal
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeChildModal();
+            closeWorkshopModal();
+            closeAddChildModal();
+        }
+    });
+</script>
+{% endblock %}

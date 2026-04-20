@@ -1,0 +1,37 @@
+{% extends 'Mails/base_email.html' %}
+
+{% block email_content %}
+    <div class="header">
+        <h2>Demande de Partenariat Reçue - Les Éclaireurs</h2>
+    </div>
+    
+    <div class="content">
+        <p>Bonjour {{ contact_name }},</p>
+        
+        <div class="success-box">
+            <strong>✓ Votre demande de partenariat a bien été reçue !</strong>
+        </div>
+        
+        <p>Nous vous remercions d'avoir soumis une demande de partenariat pour l'établissement <strong>{{ school_name }}</strong>.</p>
+        
+        <p>Votre demande sera examinée par notre équipe dans les plus brefs délais. Nous vous contacterons pour discuter de vos besoins et organiser une rencontre.</p>
+        
+        <p><strong>Récapitulatif de votre demande :</strong></p>
+        <ul>
+            <li><strong>Établissement :</strong> {{ school_name }}</li>
+            <li><strong>Adresse :</strong> {{ school_address }}</li>
+            <li><strong>Contact :</strong> {{ contact_name }}</li>
+        </ul>
+        
+        <p>En attendant, n'hésitez pas à consulter notre site pour en savoir plus sur nos activités et nos programmes d'accompagnement.</p>
+        
+        <p>Cordialement,<br>
+        <strong>L'équipe des Éclaireurs</strong></p>
+    </div>
+    
+    <div class="footer">
+        <p>Les Éclaireurs - Plateforme d'accompagnement scolaire</p>
+        <p>Cet email est un accusé de réception automatique, merci de ne pas y répondre.</p>
+    </div>
+{% endblock %}
+

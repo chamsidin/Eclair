@@ -1,0 +1,281 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}Devenir Intervenant - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/formulaires-dark.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="inscription-container">
+    <a href="{% url 'App:main_formulaires' %}" class="back-button">
+        <i class="fas fa-arrow-left"></i> Retour aux formulaires
+    </a>
+    
+    <div class="text-center mb-4">
+        <h1 class="display-4 text-primary">Devenir Intervenant / Éclaireur</h1>
+        <p class="lead">Rejoignez notre équipe et contribuez à l'accompagnement scolaire des jeunes</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" novalidate>
+        {% csrf_token %}
+        
+        <!-- Informations Personnelles -->
+        <div class="form-section">
+            <h3><i class="fas fa-user"></i> Informations Personnelles</h3>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.prenom.id_for_label }}">Prénom <span class="required">*</span></label>
+                        {{ form.prenom }}
+                        {% if form.prenom.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.prenom.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.nom.id_for_label }}">Nom <span class="required">*</span></label>
+                        {{ form.nom }}
+                        {% if form.nom.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.nom.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.email.id_for_label }}">Email <span class="required">*</span></label>
+                        {{ form.email }}
+                        {% if form.email.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.email.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.telephone.id_for_label }}">Téléphone <span class="required">*</span></label>
+                        {{ form.telephone }}
+                        {% if form.telephone.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.telephone.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.date_naissance.id_for_label }}">Date de naissance <span class="required">*</span></label>
+                        {{ form.date_naissance }}
+                        {% if form.date_naissance.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.date_naissance.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.adresse.id_for_label }}">Adresse complète <span class="required">*</span></label>
+                        {{ form.adresse }}
+                        {% if form.adresse.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.adresse.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formation et Expérience -->
+        <div class="form-section">
+            <h3><i class="fas fa-graduation-cap"></i> Formation et Expérience</h3>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.niveau_etudes.id_for_label }}">Niveau d'études <span class="required">*</span></label>
+                        {{ form.niveau_etudes }}
+                        {% if form.niveau_etudes.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.niveau_etudes.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.domaine_etudes.id_for_label }}">Domaine d'études <span class="required">*</span></label>
+                        {{ form.domaine_etudes }}
+                        {% if form.domaine_etudes.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.domaine_etudes.errors %}{{ error }}{% endfor %}
+                            </div>
+                        {% endif %}
+                        <div class="help-text">Ex: Mathématiques, Lettres, Sciences...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.experience.id_for_label }}">Expérience en enseignement</label>
+                {{ form.experience }}
+                {% if form.experience.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.experience.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.matieres.id_for_label }}">Matières que vous souhaitez enseigner <span class="required">*</span></label>
+                {{ form.matieres }}
+                {% if form.matieres.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.matieres.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+                <div class="help-text">Ex: Mathématiques, Français, Physique-Chimie</div>
+            </div>
+        </div>
+
+        <!-- Disponibilités -->
+        <div class="form-section">
+            <h3><i class="fas fa-clock"></i> Disponibilités</h3>
+            
+            <div class="form-group">
+                <label for="{{ form.disponibilites.id_for_label }}">Vos disponibilités hebdomadaires <span class="required">*</span></label>
+                {{ form.disponibilites }}
+                {% if form.disponibilites.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.disponibilites.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+                <div class="help-text">Ex: Lundi et mercredi de 16h à 19h, Samedi de 9h à 12h</div>
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.heures_semaine.id_for_label }}">Nombre d'heures par semaine <span class="required">*</span></label>
+                {{ form.heures_semaine }}
+                {% if form.heures_semaine.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.heures_semaine.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Motivation -->
+        <div class="form-section">
+            <h3><i class="fas fa-heart"></i> Motivation</h3>
+            
+            <div class="form-group">
+                <label for="{{ form.motivation.id_for_label }}">Pourquoi souhaitez-vous devenir intervenant ? <span class="required">*</span></label>
+                {{ form.motivation }}
+                {% if form.motivation.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.motivation.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Documents -->
+        <div class="form-section">
+            <h3><i class="fas fa-file-upload"></i> Documents</h3>
+          
+            
+            <div class="form-group">
+                <label for="{{ form.cv.id_for_label }}">CV (PDF uniquement) <span class="required">*</span></label>
+                {{ form.cv }}
+                {% if form.cv.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.cv.errors %}{{ error %}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.autre_documents.id_for_label }}">Autre documents (PDF uniquement) - Optionnel</label>
+                {{ form.autre_documents }}
+                {% if form.autre_documents.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.autre_documents.errors %}{{ error }}{% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-paper-plane"></i> Soumettre ma candidature
+            </button>
+        </div>
+    </form>
+
+    <div class="mt-4 p-3 bg-light rounded">
+        <h5><i class="fas fa-info-circle"></i> Processus de candidature</h5>
+        <ol class="mb-0">
+            <li>Soumettez votre candidature via ce formulaire.</li>
+            <li>Notre équipe examine votre profil et vous contactera prochainement.</li>
+            <li>Si votre profil correspond, vous serez convoqué(e) à un entretien.</li>
+            <li>Formation initiale pour nos nouveaux intervenants.</li>
+            <li>Début de votre mission d'accompagnement.</li>
+        </ol>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Apply dark theme to body
+    document.body.classList.add('dark-theme');
+    
+    // Validation côté client
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const submitBtn = document.querySelector('.btn-submit');
+        
+        form.addEventListener('submit', function(e) {
+            // Désactiver le bouton pour éviter les doubles soumissions
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+        });
+        
+        // Validation en temps réel
+        const requiredFields = form.querySelectorAll('input[required], textarea[required], select[required]');
+        requiredFields.forEach(field => {
+            field.addEventListener('blur', function() {
+                if (this.value.trim() === '') {
+                    this.style.borderColor = '#ff7f7f';
+                } else {
+                    this.style.borderColor = '#2fe7d1';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

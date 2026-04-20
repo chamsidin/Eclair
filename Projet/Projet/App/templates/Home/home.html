@@ -1,0 +1,488 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="py-20 md:py-32">
+    <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="fade-in">
+                <!-- Image and Title on same line -->
+                <div class="flex items-center justify-center gap-0 mb-12">
+                    <!-- Image Placeholder -->
+                    <div class="w-56 h-56 md:w-72 md:h-72 flex items-center justify-center flex-shrink-0">
+                        <img src="{% static 'images/Logo.png' %}" alt="Hero Image" class="w-full h-full object-contain" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'text-gray-400 text-xs text-center\'>Image</div>';">
+                    </div>
+                    <!-- Title -->
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight glow-text -ml-12">
+                        LES ÉCLAIREURS
+                    </h1>
+                </div>
+                
+                <p class="text-xl md:text-2xl text-gray-100 mb-24 leading-relaxed">
+                    Association loi 1901 – reconnue d'intérêt général à vocation pédagogique et sociale.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                    <a href="{% url 'App:donation_form' %}" class="px-8 py-4 opening-hours-card rounded-lg hover:shadow-2xl smooth-transition font-semibold text-center text-lg" style="color: #042034 !important;">
+                        <i class="fas fa-heart mr-2"></i>Faire un don
+                    </a>
+                    <a href="{% url 'App:main_formulaires' %}" class="px-8 py-4 bg-gradient-to-br from-primary to-secondary text-white rounded-lg hover:shadow-2xl smooth-transition font-semibold text-center text-lg">
+                        <i class="fas fa-user-plus mr-2"></i>S'inscrire
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Notre Mission Section -->
+<section id="notre-mission" class="py-20">
+    <div class="container mx-auto px-4">
+        <div class="max-w-full mx-auto grid md:grid-cols-[1fr_1.6fr] gap-20 md:gap-32 items-center">
+            <!-- Circular Image Placeholder on Left -->
+            <div class="flex justify-center md:justify-start md:-ml-16">
+                <div class="relative">
+                    <!-- Decorative Circle Background -->
+                    <div class="absolute bottom-0 right-0 w-48 h-48 md:w-56 md:h-56 rounded-full translate-x-20 translate-y-12" style="background-color: #C8A55A; z-index: 0; border: none; box-shadow: none;"></div>
+                    <!-- Main Image Circle -->
+                    <div class="relative w-[28rem] h-[28rem] md:w-[34rem] md:h-[34rem] rounded-full overflow-hidden bg-gray-700 flex items-center justify-center" style="z-index: 1; border: none; box-shadow: none;">
+                        <img src="{% static 'images/NotreMission.png' %}" alt="Notre mission" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'text-gray-400 text-center p-8\'>Image placeholder<br/>400x400px</div>';">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Text Content on Right -->
+            <div class="text-justify">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 glow-text" style="color: #eaf6f3;">Notre mission</h2>
+                <div class="space-y-6">
+                    <p class="text-xl leading-relaxed" style="color: rgba(255, 255, 255, 0.7);">
+                        Face au double défi de la baisse du niveau en mathématiques chez les élèves du secondaire et du creusement des inégalités scolaires, Les Éclaireurs s'engagent pour une éducation plus juste et exigeante.
+                    </p>
+                    
+                    <p class="text-xl leading-relaxed" style="color: rgba(255, 255, 255, 0.7);">
+                        Notre ambition : servir la cause des mathématiques en France et agir concrètement pour l'égalité des chances.
+                    </p>
+
+                    <p class="text-xl leading-relaxed" style="color: rgba(255, 255, 255, 0.7);">
+                        Nous proposons à des lycéens de tous horizons des ateliers de mathématiques collectifs et interactifs, animés par des étudiants passionnés issus des grandes écoles françaises.
+                    </p>
+
+                    <p class="text-xl leading-relaxed" style="color: rgba(255, 255, 255, 0.7);">
+                        Dans une atmosphère bienveillante et stimulante, ces ateliers permettent aux élèves de consolider leurs connaissances, de reprendre confiance en leurs capacités et de redécouvrir le plaisir de comprendre les mathématiques.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Les ateliers : comment ça marche ? Section -->
+<section class="py-20">
+    <div class="container mx-auto px-4">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="section-title-dark text-center mb-12 glow-text">Les ateliers : comment ça marche ?</h2>
+
+            <div class="grid md:grid-cols-3 gap-24 md:gap-32">
+                <!-- Step 1 -->
+                <div class="text-center group">
+                    <div class="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300" style="background: #C8A55A; border: 3px solid white;">
+                        <i class="fas fa-users" style="color: white;"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-100 mb-4" style="color: #2fe7d1;">Petits groupes</h4>
+                    <p class="text-gray-200 leading-relaxed text-justify">
+                        Les ateliers se tiennent en dehors des cours dans les lycées partenaires, en petits groupes d'une dizaine d'élèves.
+                    </p>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="text-center group">
+                    <div class="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300" style="background: #C8A55A; border: 3px solid white;">
+                        <i class="fas fa-graduation-cap" style="color: white;"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-100 mb-4" style="color: #2fe7d1;">Éclaireurs passionnés</h4>
+                    <p class="text-gray-200 leading-relaxed text-justify">
+                        Chaque séance est animée par un ou une Éclaireur·se, étudiant·e en grande école sélectionné·e pour sa pédagogie, son excellence et sa motivation.
+                    </p>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="text-center group">
+                    <div class="w-20 h-20 mx-auto mb-6 rounded-full flex items-center justify-center text-3xl group-hover:scale-110 transition-transform duration-300" style="background: #C8A55A; border: 3px solid white;">
+                        <i class="fas fa-handshake" style="color: white;"></i>
+                    </div>
+                    <h4 class="text-lg font-semibold text-gray-100 mb-4" style="color: #2fe7d1;">Collaboration étroite</h4>
+                    <p class="text-gray-200 leading-relaxed text-justify">
+                        Les Éclaireurs travaillent en binôme avec les professeurs de mathématiques afin d'assurer la cohérence avec les programmes et un suivi personnalisé.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Key Statistics Section -->
+
+
+<!-- Video Section -->
+<section class="py-20">
+    <div class="container mx-auto px-4">
+        <div class="max-w-5xl mx-auto">
+            <div class="relative">
+                <div class="w-full h-[600px] bg-white/10 backdrop-blur-sm rounded-2xl overflow-hidden">
+                    <video class="w-full h-full object-cover" controls controlsList="nodownload" oncontextmenu="return false;" loop playsinline poster="{% static 'videos/Miniature.png' %}">
+                        <source src="{% static 'videos/hero_video.mp4' %}" type="video/mp4">
+                        <!-- Fallback icon if video doesn't load -->
+                        <i class="fas fa-users text-white text-9xl opacity-50"></i>
+                    </video>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Un modèle viable gagnant-gagnant Section -->
+<section class="py-20">
+    <div class="container mx-auto px-4">
+        <div class="max-w-full mx-auto grid md:grid-cols-[1.3fr_1fr] gap-16 md:gap-24 items-center">
+            <!-- Text Content on Left -->
+            <div class="text-justify md:-ml-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 glow-text" style="color: #eaf6f3;">Un modèle viable gagnant-gagnant</h2>
+                <div class="space-y-6">
+                    <p class="text-xl leading-relaxed" style="color: rgba(255, 255, 255, 0.7);">
+                        Pour garantir l'égalité des chances, tous les ateliers sont gratuits. La pérennité du modèle repose sur les dons de tiers ainsi que de certaines familles d’élèves qui peuvent et souhaitent soutenir l’association. Ce système permet de rémunérer équitablement les étudiants-intervenants.
+                    </p>
+
+                    <p class="text-xl leading-relaxed" style="color: rgba(255, 255, 255, 0.7);">
+                        Les Éclaireurs est une association à but non lucratif qui ne réalise aucun bénéfice : l'intégralité de ses ressources est réinvestie dans le développement de ses actions éducatives et sociales.
+                    </p>
+
+                    <p class="text-xl leading-relaxed" style="color: rgba(255, 255, 255, 0.7);">
+                        Les dons effectués au profit de l'association – reconnue d'intérêt général – sont éligibles à une réduction d'impôt de 66 %, renforçant ainsi le cercle vertueux de la solidarité et de l'engagement collectif.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Circular Image Placeholder on Right -->
+            <div class="flex justify-center md:justify-end md:ml-12">
+                <div class="relative">
+                    <!-- Second Decorative Circle - Top Left (Light Blue) -->
+                    <div class="absolute top-0 left-0 w-32 h-32 md:w-40 md:h-40 rounded-full -translate-x-16 translate-y-40" style="background-color: #0B8796; z-index: 0; border: none; box-shadow: none;"></div>
+                    <!-- First Decorative Circle - Bottom Left (Mustard Yellow) -->
+                    <div class="absolute bottom-0 left-0 w-48 h-48 md:w-56 md:h-56 rounded-full -translate-x-20 translate-y-12" style="background-color: #C8A55A; z-index: 1; border: none; box-shadow: none;"></div>
+                    <!-- Main Image Circle -->
+                    <div class="relative w-96 h-96 md:w-[28rem] md:h-[28rem] rounded-full overflow-hidden bg-gray-700 flex items-center justify-center" style="z-index: 2; border: none; box-shadow: none;">
+                        <img src="{% static 'images/ModeleViable.png' %}" alt="Modèle viable" class="w-full h-full object-cover" onerror="this.style.display='none'; this.parentElement.innerHTML='<div class=\'text-gray-400 text-center p-8\'>Image placeholder<br/>400x400px</div>';">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Section - Team -->
+<section id="qui-sommes-nous" class="py-20">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 glow-text">Notre équipe</h2>
+
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <!-- Person 1 -->
+            <div class="rounded-xl p-12 shadow-lg hover-lift text-center" style="background-color: rgba(14, 74, 96, 0.7);">
+                <img src="{% static 'images/team/Marguerite1.png' %}" alt="Marguerite Burghardt" class="w-40 h-40 rounded-full object-cover mx-auto mb-8">
+                <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3 glow-text" style="line-height: 1.8;">MARGUERITE<br>BURGHARDT</h3>
+                <p class="font-semibold mb-6 text-xl md:text-2xl" style="background: linear-gradient(90deg, #cdffd8, #94b9ff); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Présidente</p>
+                <p class="text-gray-600 leading-relaxed text-base md:text-lg text-justify">
+                    Marguerite Burghardt est une banquière engagée. Après une solide expérience en banque de financement et d'investissement, elle a rejoint la banque privée mondiale de BNP Paribas où elle siège au comité exécutif en tant que responsable de la conduite des affaires. Elle a créé le programme Chances Augmentées de l'ESCP, et présidé le comité Égalité des chances de la Fondation ESCP. Marguerite est diplômée de l'ESCP (Master en Management), titulaire d'un Master 2 d'Economie délivré par Sciences Po, et est mère de quatre enfants.
+                </p>
+            </div>
+            
+            <!-- Person 2 -->
+            <div class="rounded-xl p-12 shadow-lg hover-lift text-center" style="background-color: rgba(14, 74, 96, 0.7);">
+                <img src="{% static 'images/team/Ambroise.png' %}" alt="Ambroise Soubrier" class="w-40 h-40 rounded-full object-cover mx-auto mb-8">
+                <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3 glow-text" style="line-height: 1.8;">AMBROISE<br>SOUBRIER</h3>
+                <p class="font-semibold mb-6 text-xl md:text-2xl" style="background: linear-gradient(90deg, #ff66c4, #ffde59); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Directeur général</p>
+                <p class="text-gray-600 leading-relaxed text-base md:text-lg text-justify">
+                    Ambroise œuvre pour l'égalité des chances depuis plusieurs années avec sa chaîne YouTube Cogitamus, destinée à offrir aux étudiants de classes préparatoires un support vidéo gratuit de mathématiques. Il a initié le modèle des Éclaireurs quand il était étudiant à l'ESCP en animant chaque semaine des ateliers de maths groupés dans les amphithéâtres vacants de l'ESCP, gratuits pour les boursiers et très peu cher pour les autres. Il est diplômé d'un master en management de l'ESCP.
+                </p>
+            </div>
+            
+            <!-- Person 3 -->
+            <div class="rounded-xl p-12 shadow-lg hover-lift text-center" style="background-color: rgba(14, 74, 96, 0.7);">
+                <img src="{% static 'images/team/Arthur.png' %}" alt="Arthur Bert" class="w-40 h-40 rounded-full object-cover mx-auto mb-8">
+                <h3 class="text-2xl md:text-3xl font-bold text-gray-900 mb-3 glow-text" style="line-height: 1.8;">ARTHUR<br>BERT</h3>
+                <p class="font-semibold mb-6 text-xl md:text-2xl" style="background: linear-gradient(90deg, #0cc0df, #ffde59); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Directeur adjoint</p>
+                <p class="text-gray-600 leading-relaxed text-base md:text-lg text-justify">
+                    Arthur est engagé pour l'égalité des chances depuis 2018 au sein de la fondation du Puylata, Student Advisor, Parkours, Major-Prepa, et désormais les Éclaireurs. Il est doctorant à HEC Paris en stratégie d'entreprise et sciences des organisations. Il est diplômé d'un master de sciences cognitives de l'ENS-PSL et d'un master en management d'HEC Paris.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Primary Action Buttons Section -->
+<section class="py-8">
+    <div class="container mx-auto px-4">
+        <h2 class="section-title-dark mb-6 glow-text">Notre communauté</h2>
+
+        <!-- Community Description -->
+        <div class="max-w-4xl mx-auto mb-10">
+            <p class="text-xl text-gray-200 leading-relaxed text-center italic">
+                Ensemble, nous croyons qu'il est possible de réconcilier exigence et solidarité, savoir et confiance, mathématiques et plaisir d'apprendre.
+            </p>
+        </div>
+
+        <!-- Community Cards Grid -->
+        <div class="community-grid">
+            <a href="#parents-eleves" class="community-card group relative">
+                <div class="icon-wrap">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="8" r="3" stroke="#2fe7d1" stroke-width="1.6"/>
+                        <path d="M4 20c0-3.3 2.7-6 6-6h4c3.3 0 6 2.7 6 6" stroke="#2fe7d1" stroke-width="1.6"/>
+                    </svg>
+                </div>
+                <p>Parents</p>
+                <div class="community-card-description opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-800 text-gray-200 text-sm rounded-lg p-4 shadow-xl z-50 pointer-events-none">
+                    Des parents et des donateurs qui accompagnent activement cette aventure éducative
+                </div>
+            </a>
+
+            <a href="#parents-eleves" class="community-card group relative">
+                <div class="icon-wrap">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="8" r="3" stroke="#40bfff" stroke-width="1.6"/>
+                        <path d="M4 20c0-3.3 2.7-6 6-6h4c3.3 0 6 2.7 6 6" stroke="#40bfff" stroke-width="1.6"/>
+                    </svg>
+                </div>
+                <p>Élèves</p>
+                <div class="community-card-description opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-800 text-gray-200 text-sm rounded-lg p-4 shadow-xl z-50 pointer-events-none">
+                    Des lycéens désireux d'apprendre et de progresser
+                </div>
+            </a>
+
+            <a href="#intervenants" class="community-card group relative">
+                <div class="icon-wrap">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="8" r="3" stroke="#ff5252" stroke-width="1.6"/>
+                        <path d="M4 20c0-3.3 2.7-6 6-6h4c3.3 0 6 2.7 6 6" stroke="#ff5252" stroke-width="1.6"/>
+                    </svg>
+                </div>
+                <p>Éclaireurs</p>
+                <div class="community-card-description opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-800 text-gray-200 text-sm rounded-lg p-4 shadow-xl z-50 pointer-events-none">
+                    Des étudiants passionnés qui partagent leurs savoirs
+                </div>
+            </a>
+
+            <a href="#professeurs" class="community-card group relative">
+                <div class="icon-wrap">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="8" r="3" stroke="#ffd700" stroke-width="1.6"/>
+                        <path d="M4 20c0-3.3 2.7-6 6-6h4c3.3 0 6 2.7 6 6" stroke="#ffd700" stroke-width="1.6"/>
+                    </svg>
+                </div>
+                <p>Professeurs</p>
+                <div class="community-card-description opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-800 text-gray-200 text-sm rounded-lg p-4 shadow-xl z-50 pointer-events-none">
+                    Des professeurs partenaires convaincus de la force du collectif
+                </div>
+            </a>
+
+            <a href="#proviseurs" class="community-card group relative">
+                <div class="icon-wrap">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="8" r="3" stroke="#4caf50" stroke-width="1.6"/>
+                        <path d="M4 20c0-3.3 2.7-6 6-6h4c3.3 0 6 2.7 6 6" stroke="#4caf50" stroke-width="1.6"/>
+                    </svg>
+                </div>
+                <p>Proviseurs</p>
+                <div class="community-card-description opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-800 text-gray-200 text-sm rounded-lg p-4 shadow-xl z-50 pointer-events-none">
+                    Des proviseurs engagés qui ouvrent leurs établissements et soutiennent la démarche
+                </div>
+            </a>
+
+            <a href="#faire-un-don" class="community-card group relative">
+                <div class="icon-wrap">
+                    <svg width="26" height="26" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 21s-7-4.6-9-7.2C1.7 11.7 4 8 8 8c1.9 0 3 1.7 4 1.7S14.1 8 16 8c4 0 6.3 3.7 5 5.8-2 2.6-9 7.2-9 7.2z" stroke="#9c27b0" stroke-width="1.4"/>
+                    </svg>
+                </div>
+                <p>Donateurs</p>
+                <div class="community-card-description opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 w-64 bg-gray-800 text-gray-200 text-sm rounded-lg p-4 shadow-xl z-50 pointer-events-none">
+                    Des parents et des donateurs qui accompagnent activement cette aventure éducative
+                </div>
+            </a>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="flex justify-center mt-12">
+            <a href="{% url 'App:main_formulaires' %}" class="px-8 py-4 bg-gradient-to-br from-primary to-secondary text-white rounded-lg hover:shadow-2xl smooth-transition font-semibold text-center text-lg">
+                <i class="fas fa-user-plus mr-2"></i>Je rejoins la communauté  
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Our Actions Section -->
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Contact Section -->
+<section id="contact" class="py-20 bg-lightgray">
+    <div class="container mx-auto px-4">
+        <div class="max-w-3xl mx-auto text-center mb-16">
+            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 mb-6 glow-text">Contactez-Nous</h2>
+            <p class="text-xl text-gray-600 leading-relaxed">
+                Une question ? Un projet de partenariat ? N'hésitez pas à nous contacter, nous vous répondrons dans les plus brefs délais.
+            </p>
+        </div>
+        
+        <div class="max-w-2xl mx-auto">
+            <!-- Contact Form -->
+            <div class="bg-white rounded-xl p-8 shadow-lg">
+                <form method="post" action="{% url 'App:home' %}#contact" class="space-y-6">
+                    {% csrf_token %}
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Nom complet</label>
+                        <input type="text" name="full_name" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary smooth-transition" placeholder="Votre nom">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Email</label>
+                        <input type="email" name="email" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary smooth-transition" placeholder="votre.email@exemple.fr">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Sujet</label>
+                        <select name="subject" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary smooth-transition">
+                            <option value="">Sélectionnez un sujet</option>
+                            <option value="Inscription d'un enfant">Inscription d'un enfant</option>
+                            <option value="Devenir intervenant">Devenir intervenant</option>
+                            <option value="Partenariat établissement">Partenariat établissement</option>
+                            <option value="Donation">Donation</option>
+                            <option value="Autre demande">Autre demande</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-700 font-semibold mb-2">Message</label>
+                        <textarea name="message" rows="5" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary smooth-transition" placeholder="Votre message..."></textarea>
+                    </div>
+                    
+                    <button type="submit" class="w-full px-8 py-4 bg-gradient-to-br from-primary to-secondary text-white rounded-lg hover:shadow-lg smooth-transition font-semibold text-lg">
+                        <i class="fas fa-paper-plane mr-2"></i>Envoyer le message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section id="faire-un-don" class="py-20 gradient-bg text-white">
+    <div class="container mx-auto px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6 glow-text">Soutenez Notre Mission</h2>
+            <p class="text-xl mb-8 leading-relaxed opacity-90">
+                Votre contribution permet d'offrir des opportunités éducatives à tous les enfants, indépendamment de leur situation économique. Ensemble, éclairons leur avenir.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-6 justify-center">
+                <a href="{% url 'App:donation_form' %}" class="px-10 py-4 opening-hours-card rounded-lg hover:shadow-2xl smooth-transition font-bold text-lg" style="color: #042034 !important;">
+                    Faire un don
+                </a>
+               
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Final CTA -->
+
+
+<!-- Scroll to top button -->
+<button class="to-top" aria-label="Haut" title="Haut">
+    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M7.41 15.41L12 10.83l4.59 4.58L18 14l-6-6-6 6z" fill="currentColor"/>
+    </svg>
+</button>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Apply dark theme to body
+    document.body.classList.add('dark-theme');
+    
+    // Scroll to top button functionality
+    const scrollTopBtn = document.querySelector('.to-top');
+    
+    window.addEventListener('scroll', () => {
+        if (window.pageYOffset > 300) {
+            scrollTopBtn.classList.add('visible');
+        } else {
+            scrollTopBtn.classList.remove('visible');
+        }
+    });
+    
+    scrollTopBtn.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+    
+    // Primary button active state toggle
+    const primaryButtons = document.querySelectorAll('.pill');
+    primaryButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            // Only toggle active state for primary pills
+            if (btn.classList.contains('primary')) {
+                primaryButtons.forEach(b => {
+                    if (b.classList.contains('primary')) {
+                        b.classList.remove('active');
+                    }
+                });
+                btn.classList.add('active');
+            }
+        });
+    });
+    
+    // Smooth scroll for anchor links (excluding community cards)
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+        a.addEventListener('click', e => {
+            // Skip smooth scrolling for community cards
+            if (a.classList.contains('community-card')) {
+                e.preventDefault();
+                return;
+            }
+            
+            const targetId = a.getAttribute('href');
+            if (targetId !== '#' && targetId.length > 1) {
+                e.preventDefault();
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
+

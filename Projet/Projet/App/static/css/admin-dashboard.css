@@ -1,0 +1,531 @@
+/* Admin Dashboard Dark Theme Styles 
+   
+   ARCHITECTURE:
+   =============
+   This CSS applies dark theme styling to the admin dashboard.
+   
+   SELECTORS HIERARCHY:
+   -------------------
+   1. .admin-dashboard - Main dashboard container (highest level)
+   2. #userModal, #workshopModal, #establishmentModal - Modal-specific styles
+   3. .info-box - Special notification boxes that need visible backgrounds
+   
+   IMPORTANT NOTES:
+   ---------------
+   - Modals are fixed position and may be outside .admin-dashboard container
+   - Always use ID selectors for modal-specific styles (#userModal, etc.)
+   - Use .info-box class for notification boxes that need to be visible
+   - All colors use rgba with transparency for glass effect
+   - Accent color: #2fe7d1 (teal/cyan)
+   - Secondary accent: #40bfff (blue)
+   
+   MAINTENANCE:
+   -----------
+   - Keep specificity clear: ID > Class > Tag
+   - Document any new exceptions or special cases
+   - Test both dashboard and modal views when making changes
+*/
+
+/* ========================================
+   Base Layout & Typography
+   ======================================== */
+
+.admin-dashboard {
+    background: linear-gradient(180deg, rgba(6, 18, 34, 0.4) 0%, rgba(4, 32, 52, 0.4) 100%);
+    position: relative;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+.admin-dashboard .container {
+    position: relative;
+    z-index: 1;
+}
+
+.admin-dashboard .text-gray-900,
+.admin-dashboard .text-gray-800,
+.admin-dashboard .text-gray-700 {
+    color: #eaf6f3 !important;
+}
+
+.admin-dashboard .text-gray-600,
+.admin-dashboard .text-gray-500 {
+    color: rgba(234, 246, 243, 0.78) !important;
+}
+
+.admin-dashboard .text-gray-400,
+.admin-dashboard .text-gray-300 {
+    color: rgba(234, 246, 243, 0.6) !important;
+}
+
+.admin-dashboard .bg-gray-50,
+.admin-dashboard .bg-gray-100 {
+    background: rgba(255, 255, 255, 0.04) !important;
+}
+
+.admin-dashboard .bg-white {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 100%) !important;
+    border: 1px solid rgba(160, 230, 220, 0.14);
+    border-radius: 18px;
+    box-shadow: 0 22px 50px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(14px);
+}
+
+.admin-dashboard .border,
+.admin-dashboard .border-gray-200,
+.admin-dashboard .border-gray-300 {
+    border-color: rgba(160, 230, 220, 0.18) !important;
+}
+
+.admin-dashboard .divide-gray-200 > :not([hidden]) ~ :not([hidden]) {
+    border-color: rgba(160, 230, 220, 0.15) !important;
+}
+
+.admin-dashboard .hover\:bg-gray-50:hover {
+    background: rgba(47, 231, 209, 0.08) !important;
+}
+
+.admin-dashboard .bg-gray-200 {
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: rgba(234, 246, 243, 0.85) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+}
+
+.admin-dashboard .bg-gray-200:hover {
+    background: rgba(255, 255, 255, 0.18) !important;
+}
+
+.admin-dashboard .hover\:bg-gray-300:hover {
+    background: rgba(255, 255, 255, 0.22) !important;
+}
+
+/* ========================================
+   Info Boxes - Visible notification boxes
+   ======================================== */
+
+/* For info boxes in modals - these need visible styling */
+#userModal .info-box,
+#workshopModal .info-box,
+#establishmentModal .info-box {
+    background: rgba(47, 231, 209, 0.12) !important;
+    border: 1px solid rgba(47, 231, 209, 0.35) !important;
+    border-radius: 0.75rem;
+}
+
+#userModal .info-box p,
+#workshopModal .info-box p,
+#establishmentModal .info-box p {
+    color: #eaf6f3 !important;
+}
+
+/* For info boxes in main dashboard */
+.admin-dashboard .info-box {
+    background: rgba(47, 231, 209, 0.12) !important;
+    border: 1px solid rgba(47, 231, 209, 0.35) !important;
+    border-radius: 0.75rem;
+}
+
+.admin-dashboard .info-box p,
+.admin-dashboard .info-box .text-gray-900 {
+    color: #eaf6f3 !important;
+}
+
+/* ========================================
+   Cards & KPIs
+   ======================================== */
+
+.admin-dashboard .hover-lift {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-dashboard .hover-lift:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 60px rgba(47, 231, 209, 0.2);
+}
+
+.admin-dashboard .bg-blue-100 {
+    background: rgba(64, 191, 255, 0.2) !important;
+    color: #40bfff !important;
+}
+
+.admin-dashboard .bg-green-100 {
+    background: rgba(47, 231, 209, 0.2) !important;
+    color: #2fe7d1 !important;
+}
+
+.admin-dashboard .bg-purple-100 {
+    background: rgba(182, 156, 255, 0.22) !important;
+    color: #b69cff !important;
+}
+
+.admin-dashboard .bg-orange-100 {
+    background: rgba(255, 183, 77, 0.22) !important;
+    color: #ffb74d !important;
+}
+
+.admin-dashboard .bg-red-100 {
+    background: rgba(255, 116, 116, 0.2) !important;
+    color: #ff9191 !important;
+}
+
+.admin-dashboard .bg-yellow-100 {
+    background: rgba(255, 210, 73, 0.2) !important;
+    color: #ffd249 !important;
+}
+
+.admin-dashboard .bg-indigo-100 {
+    background: rgba(140, 167, 255, 0.2) !important;
+    color: #90a6ff !important;
+}
+
+.admin-dashboard .text-blue-600,
+.admin-dashboard .text-blue-700,
+.admin-dashboard .text-blue-800 {
+    color: #40bfff !important;
+}
+
+.admin-dashboard .text-green-600,
+.admin-dashboard .text-green-700,
+.admin-dashboard .text-green-800 {
+    color: #2fe7d1 !important;
+}
+
+.admin-dashboard .text-purple-600,
+.admin-dashboard .text-purple-700,
+.admin-dashboard .text-purple-800 {
+    color: #b69cff !important;
+}
+
+.admin-dashboard .text-orange-600 {
+    color: #ffb74d !important;
+}
+
+.admin-dashboard .text-red-600,
+.admin-dashboard .text-red-700,
+.admin-dashboard .text-red-800 {
+    color: #ff9191 !important;
+}
+
+.admin-dashboard .text-yellow-600,
+.admin-dashboard .text-yellow-700,
+.admin-dashboard .text-yellow-800 {
+    color: #ffd249 !important;
+}
+
+.admin-dashboard .border-2.border-green-200,
+.admin-dashboard .border-2.border-yellow-200 {
+    border-color: rgba(47, 231, 209, 0.35) !important;
+}
+
+.admin-dashboard .border-2.border-yellow-200 {
+    border-color: rgba(255, 210, 73, 0.35) !important;
+}
+
+/* ========================================
+   Tables & Lists
+   ======================================== */
+
+.admin-dashboard table {
+    background: transparent;
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.admin-dashboard thead {
+    background: rgba(255, 255, 255, 0.05) !important;
+}
+
+.admin-dashboard thead th {
+    color: rgba(234, 246, 243, 0.8) !important;
+    letter-spacing: 0.08em;
+}
+
+.admin-dashboard tbody tr {
+    background: rgba(255, 255, 255, 0.02);
+    transition: background 0.25s ease;
+}
+
+.admin-dashboard tbody tr:hover {
+    background: rgba(47, 231, 209, 0.08);
+}
+
+.admin-dashboard td,
+.admin-dashboard th {
+    border-color: rgba(160, 230, 220, 0.12) !important;
+}
+
+.admin-dashboard .divide-y > :not([hidden]) ~ :not([hidden]) {
+    border-color: rgba(160, 230, 220, 0.12) !important;
+}
+
+.admin-dashboard .rounded-full {
+    border-radius: 999px;
+}
+
+.admin-dashboard .line-clamp-2 {
+    color: rgba(234, 246, 243, 0.75) !important;
+}
+
+/* Badges */
+.admin-dashboard .bg-blue-50 {
+    background: rgba(64, 191, 255, 0.12) !important;
+    color: #40bfff !important;
+}
+
+.admin-dashboard .bg-gray-100.text-gray-800 {
+    background: rgba(255, 255, 255, 0.12) !important;
+    color: rgba(234, 246, 243, 0.85) !important;
+}
+
+/* ========================================
+   Forms & Filters
+   ======================================== */
+
+.admin-dashboard select,
+.admin-dashboard input,
+.admin-dashboard textarea {
+    background: rgba(16, 40, 60, 0.6) !important;
+    border: 1px solid rgba(160, 230, 220, 0.25) !important;
+    color: #eaf6f3 !important;
+    border-radius: 10px !important;
+    transition: border 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-dashboard select:focus,
+.admin-dashboard input:focus,
+.admin-dashboard textarea:focus {
+    border-color: #2fe7d1 !important;
+    background: rgba(16, 40, 60, 0.85) !important;
+    box-shadow: 0 0 0 3px rgba(47, 231, 209, 0.2);
+    outline: none;
+}
+
+.admin-dashboard select option {
+    background: #031529;
+    color: #eaf6f3;
+}
+
+.admin-dashboard select option:hover,
+.admin-dashboard select option:checked {
+    background: linear-gradient(135deg, rgba(47, 231, 209, 0.3) 0%, rgba(64, 191, 255, 0.2) 100%);
+    color: #2fe7d1;
+}
+
+.admin-dashboard select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232fe7d1' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 12px;
+    padding-right: 2.5rem;
+}
+
+.admin-dashboard .text-primary {
+    color: #2fe7d1 !important;
+}
+
+.admin-dashboard .text-primary:hover {
+    color: #40bfff !important;
+}
+
+.admin-dashboard .bg-primary {
+    box-shadow: 0 12px 35px rgba(47, 231, 209, 0.28);
+}
+
+.admin-dashboard .bg-primary:hover {
+    box-shadow: 0 16px 40px rgba(47, 231, 209, 0.35);
+}
+
+/* Info banners */
+.admin-dashboard .bg-blue-50 {
+    background: rgba(64, 191, 255, 0.14) !important;
+    border: 1px solid rgba(64, 191, 255, 0.25) !important;
+    color: #40bfff !important;
+}
+
+.admin-dashboard .form-group {
+    margin-bottom: 1.25rem;
+}
+
+/* ========================================
+   Notifications & Messages
+   ======================================== */
+
+.admin-dashboard .bg-green-100.text-green-800 {
+    background: rgba(47, 231, 209, 0.2) !important;
+    color: #2fe7d1 !important;
+    border: 1px solid rgba(47, 231, 209, 0.28);
+}
+
+.admin-dashboard .bg-red-100.text-red-800 {
+    background: rgba(255, 116, 116, 0.2) !important;
+    color: #ff9191 !important;
+    border: 1px solid rgba(255, 116, 116, 0.3);
+}
+
+/* ========================================
+   Modal Styles
+   ======================================== */
+
+#userModal,
+#workshopModal,
+#establishmentModal {
+    background: rgba(4, 32, 52, 0.82);
+    backdrop-filter: blur(10px);
+}
+
+#userModal .bg-white,
+#workshopModal .bg-white,
+#establishmentModal .bg-white {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%) !important;
+    border: 1px solid rgba(160, 230, 220, 0.18);
+    box-shadow: 0 26px 55px rgba(0, 0, 0, 0.45);
+}
+
+#userModal .text-gray-900,
+#workshopModal .text-gray-900,
+#establishmentModal .text-gray-900,
+#userModal .text-gray-700,
+#workshopModal .text-gray-700,
+#establishmentModal .text-gray-700 {
+    color: #eaf6f3 !important;
+}
+
+#userModal .text-gray-500,
+#workshopModal .text-gray-500,
+#establishmentModal .text-gray-500 {
+    color: rgba(234, 246, 243, 0.65) !important;
+}
+
+#userModal label,
+#workshopModal label,
+#establishmentModal label {
+    color: #eaf6f3 !important;
+}
+
+#userModal .form-control,
+#userModal input,
+#userModal select,
+#userModal textarea,
+#workshopModal .form-control,
+#workshopModal input,
+#workshopModal select,
+#workshopModal textarea,
+#establishmentModal .form-control,
+#establishmentModal input,
+#establishmentModal select,
+#establishmentModal textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 1px solid rgba(160, 230, 220, 0.22);
+    border-radius: 0.75rem;
+    font-size: 1rem;
+    color: #eaf6f3;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+    transition: border 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+    box-shadow: none;
+}
+
+#userModal .form-control:focus,
+#userModal input:focus,
+#userModal select:focus,
+#userModal textarea:focus,
+#workshopModal .form-control:focus,
+#workshopModal input:focus,
+#workshopModal select:focus,
+#workshopModal textarea:focus,
+#establishmentModal .form-control:focus,
+#establishmentModal input:focus,
+#establishmentModal select:focus,
+#establishmentModal textarea:focus {
+    outline: none;
+    border-color: #2fe7d1;
+    box-shadow: 0 0 0 3px rgba(47, 231, 209, 0.2);
+    background-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+#userModal select,
+#workshopModal select,
+#establishmentModal select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232fe7d1' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 12px;
+    padding-right: 2.75rem;
+    appearance: none;
+}
+
+#userModal select option,
+#workshopModal select option,
+#establishmentModal select option {
+    background: #031529;
+    color: #eaf6f3;
+}
+
+#workshopModal textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+#workshopModal input[type="datetime-local"],
+#establishmentModal input[type="date"] {
+    background: rgba(16, 40, 60, 0.7) !important;
+}
+
+#workshopModal .form-check-input,
+#establishmentModal .form-check-input {
+    width: 1.25rem;
+    height: 1.25rem;
+    border: 2px solid rgba(160, 230, 220, 0.25);
+    border-radius: 0.3rem;
+    cursor: pointer;
+    background: rgba(255, 255, 255, 0.1);
+    transition: border 0.2s ease, background 0.2s ease;
+}
+
+#workshopModal .form-check-input:checked,
+#establishmentModal .form-check-input:checked {
+    background-color: #2fe7d1;
+    border-color: #2fe7d1;
+}
+
+#workshopModal .form-check-input:focus,
+#establishmentModal .form-check-input:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(47, 231, 209, 0.2);
+}
+
+#userModal p,
+#workshopModal p,
+#establishmentModal p {
+    color: rgba(234, 246, 243, 0.6) !important;
+}
+
+.admin-dashboard .bg-gray-50.rounded-lg {
+    background: rgba(255, 255, 255, 0.06) !important;
+    border: 1px solid rgba(160, 230, 220, 0.15) !important;
+}
+
+/* ========================================
+   Misc
+   ======================================== */
+
+.admin-dashboard .cursor-pointer {
+    cursor: pointer !important;
+}
+
+.admin-dashboard .transition-colors {
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.admin-dashboard .bg-gradient-to-br.from-primary.to-secondary {
+    box-shadow: 0 24px 60px rgba(47, 231, 209, 0.25);
+}
+
+.admin-dashboard .bg-white.bg-opacity-20 {
+    background: rgba(255, 255, 255, 0.18) !important;
+}
+
+.admin-dashboard .text-white.text-opacity-90 {
+    color: rgba(255, 255, 255, 0.9) !important;
+}

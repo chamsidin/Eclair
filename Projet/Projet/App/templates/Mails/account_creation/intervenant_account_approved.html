@@ -1,0 +1,61 @@
+{% extends 'Mails/base_email.html' %}
+
+{% block email_content %}
+    <div class="header">
+        <h2>Bienvenue dans l'équipe des Éclaireurs !</h2>
+    </div>
+    
+    <div class="content">
+        <div class="success-box">
+            <strong>✓ Votre candidature a été approuvée !</strong>
+        </div>
+        
+        <p>Bonjour {{ prenom }} {{ nom }},</p>
+        
+        <p>Nous avons le plaisir de vous informer que votre candidature pour devenir intervenant a été approuvée.</p>
+        
+        <p>Votre compte intervenant a été créé avec succès. Vous faites maintenant partie de notre équipe d'intervenants dédiés à l'accompagnement scolaire.</p>
+        
+        <div class="info-box">
+            <p><span class="label">Nom d'utilisateur :</span> {{ username }}</p>
+            <p><span class="label">Email :</span> {{ email }}</p>
+            <p><span class="label">Rôle :</span> Intervenant/Éclaireur</p>
+        </div>
+        
+        <p>Pour activer votre compte et accéder à votre espace intervenant, vous devez définir votre mot de passe en cliquant sur le bouton ci-dessous :</p>
+        
+        <div style="text-align: center; margin: 25px 0;">
+            <a href="{{ reset_url }}" 
+               style="display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #7290e0, #6fafac); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                Définir mon mot de passe
+            </a>
+        </div>
+        
+        <p>Ou copiez-collez ce lien dans votre navigateur :</p>
+        <p style="word-break: break-all; color: #7290e0;">
+            {{ reset_url }}
+        </p>
+        
+        <p><strong>Ce lien est valide pendant 7 jours.</strong> Si vous n'avez pas demandé ce compte, vous pouvez ignorer cet email.</p>
+        
+        <p>Une fois votre mot de passe défini, vous pourrez :</p>
+        <ul>
+            <li>Accéder à votre tableau de bord intervenant</li>
+            <li>Voir vos ateliers et les élèves inscrits</li>
+            <li>Gérer les présences et absences</li>
+            <li>Partager des documents pédagogiques</li>
+            <li>Communiquer avec les parents et l'administration</li>
+        </ul>
+        
+        <p>Nous sommes ravis de vous compter parmi nos intervenants. Bienvenue dans l'équipe !</p>
+        
+        <p>Cordialement,<br>
+        <strong>L'équipe des Éclaireurs</strong></p>
+    </div>
+    
+    <div class="footer">
+        <p>Les Éclaireurs - Plateforme d'accompagnement scolaire</p>
+        <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+    </div>
+{% endblock %}
+

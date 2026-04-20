@@ -1,0 +1,205 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block title %}{{ page_title }} - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/intervenant-dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="intervenant-dashboard min-h-screen py-8">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-3xl font-bold text-gray-900 mb-2">Tableau de bord Intervenant</h1>
+                    <p class="text-gray-600">Gérez vos ateliers et suivez vos élèves</p>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm text-gray-500">Connecté en tant que</p>
+                        <p class="font-semibold text-primary">{{ user.get_full_name|default:user.username }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-primary to-secondary rounded-full flex items-center justify-center">
+                        <i class="fas fa-chalkboard-teacher text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Active Workshops -->
+            <div class="bg-white rounded-lg shadow-md p-6 hover-lift">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Ateliers Actifs</p>
+                        <p class="text-3xl font-bold text-primary">{{ workshops.count }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-chalkboard text-blue-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Students -->
+            <div class="bg-white rounded-lg shadow-md p-6 hover-lift">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Élèves Inscrits</p>
+                        <p class="text-3xl font-bold text-secondary">{{ students.count }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-users text-green-600 text-xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Attendance Rate -->
+            
+        </div>
+
+        <!-- My Workshops -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Mes Ateliers</h3>
+            {% if workshops %}
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                {% for workshop in workshops %}
+                <div class="border border-gray-200 rounded-lg p-4 hover-lift">
+                    <div class="mb-3">
+                        <h4 class="font-semibold text-gray-900">{{ workshop.title }}</h4>
+                        <p class="text-sm text-gray-600">{{ workshop.establishment.name }}</p>
+                        <p class="text-xs text-gray-500">
+                            <i class="fas fa-calendar mr-1"></i>
+                            {{ workshop.start_date|date:"d/m/Y H:i" }} - {{ workshop.end_date|date:"H:i" }}
+                        </p>
+                    </div>
+                    <div class="mb-3">
+                        <p class="text-sm text-gray-700">{{ workshop.description|truncatewords:15 }}</p>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span class="text-sm text-gray-500">
+                            <i class="fas fa-users mr-1"></i>
+                            {% with workshop_data=attendance_data|dict_get:workshop.id %}
+                                {{ workshop_data.total_enrolled|default:0 }}/{{ workshop.max_students }} élèves
+                            {% endwith %}
+                        </span>
+                        <button onclick="openWorkshopDetailsModal({{ workshop.id }})" class="text-primary hover:text-primary-dark text-sm font-medium">
+                            Voir les détails
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-8">
+                <i class="fas fa-chalkboard text-gray-400 text-4xl mb-4"></i>
+                <p class="text-gray-500 mb-4">Aucun atelier assigné</p>
+                <p class="text-sm text-gray-400">Contactez l'administration pour être assigné à des ateliers</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Actions Rapides</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <a href="{% url 'App:intervenant_attendance_report' %}" 
+                   class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-chart-bar text-green-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">Rapports de présence</p>
+                        <p class="text-sm text-gray-600">Statistiques détaillées</p>
+                    </div>
+                </a>
+                
+                <a href="{% url 'App:intervenant_documents' %}" 
+                   class="flex items-center p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
+                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mr-3">
+                        <i class="fas fa-file-pdf text-purple-600"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-900">Mes Documents</p>
+                        <p class="text-sm text-gray-600">Partager des fichiers</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Workshop Details Modal -->
+{% include 'Dashboards/dashboard_Intervenant/workshop_details_modal.html' %}
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.body.classList.add('dark-theme');
+
+    function openWorkshopDetailsModal(workshopId) {
+        const modal = document.getElementById('workshopDetailsModal');
+        const modalContent = document.getElementById('workshopDetailsModalContent');
+        
+        // Show loading state
+        modalContent.innerHTML = `
+            <div class="text-center py-8">
+                <i class="fas fa-spinner fa-spin text-3xl" style="color: #2fe7d1;"></i>
+                <p class="mt-4" style="color: rgba(234, 246, 243, 0.72);">Chargement...</p>
+            </div>
+        `;
+        
+        // Show the modal
+        modal.classList.remove('hidden');
+        
+        // Fetch workshop details from server
+        fetch(`/ajax/intervenant-workshop-details/${workshopId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    modalContent.innerHTML = data.html;
+                } else {
+                    modalContent.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-exclamation-triangle text-3xl" style="color: #ff6b6b;"></i>
+                            <p class="mt-4" style="color: rgba(234, 246, 243, 0.72);">Erreur: ${data.error || 'Impossible de charger les détails'}</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching workshop details:', error);
+                modalContent.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-exclamation-triangle text-3xl" style="color: #ff6b6b;"></i>
+                        <p class="mt-4" style="color: rgba(234, 246, 243, 0.72);">Erreur lors du chargement des détails</p>
+                    </div>
+                `;
+            });
+    }
+
+    function closeWorkshopDetailsModal() {
+        const modal = document.getElementById('workshopDetailsModal');
+        modal.classList.add('hidden');
+    }
+
+    // Close modal when clicking outside
+    document.getElementById('workshopDetailsModal')?.addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeWorkshopDetailsModal();
+        }
+    });
+
+    // Auto-refresh attendance data every 30 seconds
+    setInterval(function() {
+        // You can add AJAX calls here to refresh attendance data
+        console.log('Refreshing intervenant dashboard...');
+    }, 30000);
+</script>
+{% endblock %}

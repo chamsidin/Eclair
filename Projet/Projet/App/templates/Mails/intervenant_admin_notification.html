@@ -1,0 +1,53 @@
+{% extends 'Mails/base_email.html' %}
+
+{% block email_content %}
+    <div class="header">
+        <h2>Nouvelle Candidature Intervenant</h2>
+    </div>
+    
+    <div class="content">
+        <p>Vous avez reçu une nouvelle candidature pour devenir intervenant depuis le formulaire du site Les Éclaireurs.</p>
+        
+        <div class="info-box">
+            <p><span class="label">Candidat :</span> {{ prenom }} {{ nom }}</p>
+            <p><span class="label">Email :</span> {{ email }}</p>
+            <p><span class="label">Téléphone :</span> {{ telephone }}</p>
+            <p><span class="label">Date de naissance :</span> {{ date_naissance|date:"d/m/Y" }}</p>
+            <p><span class="label">Adresse :</span> {{ adresse }}</p>
+        </div>
+        
+        <div class="info-box">
+            <p><span class="label">Niveau d'études :</span> {{ niveau_etudes }}</p>
+            <p><span class="label">Domaine d'études :</span> {{ domaine_etudes }}</p>
+            {% if experience %}
+            <p><span class="label">Expérience :</span> {{ experience }}</p>
+            {% endif %}
+            <p><span class="label">Matières :</span> {{ matieres|linebreaks }}</p>
+        </div>
+        
+        <div class="info-box">
+            <p><span class="label">Disponibilités :</span> {{ disponibilites|linebreaks }}</p>
+            <p><span class="label">Heures par semaine :</span> {{ heures_semaine }}</p>
+        </div>
+        
+        <div class="message-box">
+            <p><span class="label">Motivation :</span></p>
+            <p>{{ motivation|linebreaks }}</p>
+        </div>
+        
+        <p style="margin-top: 20px;">
+            <strong>Pour répondre :</strong> Répondez directement à cet email ou contactez le candidat à l'adresse : 
+            <a href="mailto:{{ email }}">{{ email }}</a>
+        </p>
+        
+        <p style="margin-top: 15px; font-size: 12px; color: #666;">
+            <strong>Note :</strong> Les documents (CV et autres) ont été uploadés et sont disponibles dans l'administration.
+        </p>
+    </div>
+    
+    <div class="footer">
+        <p>Les Éclaireurs - Plateforme d'accompagnement scolaire</p>
+        <p>Cet email a été envoyé automatiquement depuis le formulaire de candidature intervenant.</p>
+    </div>
+{% endblock %}
+

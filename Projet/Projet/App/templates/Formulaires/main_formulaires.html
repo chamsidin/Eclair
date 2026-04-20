@@ -1,0 +1,153 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}Inscriptions - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/formulaires-dark.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="formulaires-container">
+    <div class="page-header">
+        <h1 class="page-title">Inscriptions</h1>
+        <p class="page-subtitle">
+            Choisissez le type d'inscription qui correspond à votre situation. 
+            Nous vous accompagnons dans votre démarche d'inscription.
+        </p>
+    </div>
+
+    <div class="formulaires-grid">
+        <!-- Carte Inscription Parent -->
+        <div class="formulaire-card parent-card">
+            <i class="fas fa-user-friends card-icon"></i>
+            <h2 class="card-title">Inscription Parent</h2>
+            <p class="card-description">
+                Inscrivez votre enfant à notre programme d'accompagnement scolaire. 
+            </p>
+            
+            <ul class="card-features">
+                <li>Ateliers gratuits et ouverts à tous</li>
+                <li>Ambiance bienveillante et motivante</li>
+                <li>Encadrement par des étudiants de haut niveau</li>
+                <li>Progrès suivis en lien avec le lycée</li>
+            </ul>
+            
+            <a href="{% url 'App:parent_inscription' %}" class="btn-formulaire btn-parent">
+                <i class="fas fa-user-plus"></i> Inscrire mon enfant
+            </a>
+        </div>
+
+        <!-- Carte Demande Partenariat -->
+        <div class="formulaire-card proviseur-card">
+            <i class="fas fa-school card-icon"></i>
+            <h2 class="card-title">Demande de Partenariat</h2>
+            <p class="card-description">
+                Rejoignez notre réseau de lycées partenaires
+            </p>
+            
+            <ul class="card-features">
+                <li>Intégration fluide dans l’emploi du temps du lycée</li>
+                <li>Intervenants rigoureusement sélectionnés</li>
+                <li>Collaboration étroite avec les enseignants</li>
+                <li>Dynamique collective et impact positif sur les élèves</li>
+            </ul>
+            
+            <a href="{% url 'App:proviseur_inscription' %}" class="btn-formulaire btn-proviseur">
+                <i class="fas fa-handshake"></i> Demander un partenariat
+            </a>
+        </div>
+
+        <!-- Carte Devenir Intervenant -->
+        <div class="formulaire-card parent-card">
+            <i class="fas fa-chalkboard-teacher card-icon"></i>
+            <h2 class="card-title">Devenir Éclaireur</h2>
+            <p class="card-description">
+                Rejoignez notre équipe d’intervenants. 
+            </p>
+            
+            <ul class="card-features">
+                <li>Mission rémunérée et porteuse de sens</li>
+                <li>Expérience valorisante et formatrice</li>
+                <li>Horaires flexibles et cadre stimulant</li>
+                <li>Communauté d’étudiants engagés</li>
+            </ul>
+            
+            <a href="{% url 'App:intervenant_inscription' %}" class="btn-formulaire btn-parent">
+                <i class="fas fa-user-plus"></i> Devenir Éclaireur
+            </a>
+        </div>
+    </div>
+
+    <!-- Section d'informations -->
+    <div class="info-section">
+        <h3><i class="fas fa-info-circle"></i> Pourquoi choisir Les Éclaireurs ?</h3>
+        
+        <div class="info-grid">
+            <div class="info-item">
+                <i class="fas fa-graduation-cap"></i>
+                <h4>Excellence Pédagogique</h4>
+                <p>Nos intervenants sont sélectionnés pour leur expertise et leur passion de l'enseignement.</p>
+            </div>
+            
+            <div class="info-item">
+                <i class="fas fa-users"></i>
+                <h4>Approche Personnalisée</h4>
+                <p>Chaque élève bénéficie d'un accompagnement adapté à ses besoins spécifiques.</p>
+            </div>
+            
+            <div class="info-item">
+                <i class="fas fa-chart-line"></i>
+                <h4>Résultats Garantis</h4>
+                <p>Nos méthodes éprouvées garantissent des progrès significatifs chez nos élèves.</p>
+            </div>
+            
+            <div class="info-item">
+                <i class="fas fa-clock"></i>
+                <h4>Flexibilité</h4>
+                <p>Horaires adaptés et solutions sur mesure pour s'adapter à votre emploi du temps.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Apply dark theme to body
+    document.body.classList.add('dark-theme');
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animation des cartes au scroll
+        const cards = document.querySelectorAll('.formulaire-card');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        cards.forEach(card => {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(card);
+        });
+        
+        // Effet hover amélioré
+        cards.forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-8px) scale(1.02)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+    });
+</script>
+{% endblock %}

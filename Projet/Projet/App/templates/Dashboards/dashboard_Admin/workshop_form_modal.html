@@ -1,0 +1,153 @@
+<!-- Create/Edit Workshop Modal -->
+<div id="workshopModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-3xl max-h-[90vh] overflow-y-auto m-4">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h2 id="workshopModalTitle" class="text-2xl font-bold text-gray-900">
+                    {% if edit_mode %}Modifier l'Atelier{% else %}Créer un Nouvel Atelier{% endif %}
+                </h2>
+                <button onclick="closeWorkshopModal()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        <form method="post" {% if edit_mode %}action="{% url 'App:admin_workshop_edit' workshop_to_edit.id %}"{% endif %} class="p-6">
+            {% csrf_token %}
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="form-group">
+                    <label for="{{ workshop_form.title.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ workshop_form.title.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ workshop_form.title }}
+                    {% if workshop_form.title.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ workshop_form.title.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ workshop_form.max_students.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ workshop_form.max_students.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ workshop_form.max_students }}
+                    {% if workshop_form.max_students.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ workshop_form.max_students.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mb-6 form-group">
+                <label for="{{ workshop_form.description.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                    {{ workshop_form.description.label }} <span class="text-red-500">*</span>
+                </label>
+                {{ workshop_form.description }}
+                {% if workshop_form.description.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ workshop_form.description.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="form-group">
+                    <label for="{{ workshop_form.establishment.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ workshop_form.establishment.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ workshop_form.establishment }}
+                    {% if workshop_form.establishment.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ workshop_form.establishment.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ workshop_form.intervenant.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ workshop_form.intervenant.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ workshop_form.intervenant }}
+                    {% if workshop_form.intervenant.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ workshop_form.intervenant.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mb-6 form-group">
+                <label for="{{ workshop_form.room.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                    {{ workshop_form.room.label }}
+                </label>
+                {{ workshop_form.room }}
+                {% if workshop_form.room.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ workshop_form.room.errors }}</div>
+                {% endif %}
+                <p class="text-sm text-gray-500 mt-2"><i class="fas fa-info-circle mr-1"></i>Sélectionnez d'abord un établissement pour voir les salles disponibles</p>
+            </div>
+            
+            <div class="mb-6 form-group">
+                <label for="{{ workshop_form.level.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                    {{ workshop_form.level.label }} <span class="text-red-500">*</span>
+                </label>
+                {{ workshop_form.level }}
+                {% if workshop_form.level.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ workshop_form.level.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="mb-6 form-group">
+                <label for="{{ workshop_form.day.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                    {{ workshop_form.day.label }} <span class="text-red-500">*</span>
+                </label>
+                {{ workshop_form.day }}
+                {% if workshop_form.day.errors %}
+                    <div class="text-red-500 text-sm mt-1">{{ workshop_form.day.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div class="form-group">
+                    <label for="{{ workshop_form.start_date.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ workshop_form.start_date.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ workshop_form.start_date }}
+                    {% if workshop_form.start_date.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ workshop_form.start_date.errors }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ workshop_form.end_date.id_for_label }}" class="block text-sm font-semibold text-gray-700 mb-2">
+                        {{ workshop_form.end_date.label }} <span class="text-red-500">*</span>
+                    </label>
+                    {{ workshop_form.end_date }}
+                    {% if workshop_form.end_date.errors %}
+                        <div class="text-red-500 text-sm mt-1">{{ workshop_form.end_date.errors }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mb-6 form-group">
+                <label class="flex items-center cursor-pointer">
+                    {{ workshop_form.is_recurrent }}
+                    <span class="ml-3 text-sm font-semibold text-gray-700">{{ workshop_form.is_recurrent.label }}</span>
+                </label>
+                <p class="text-sm text-gray-500 mt-2 ml-7">
+                    <i class="fas fa-info-circle mr-1"></i>
+                    Si coché, l'atelier se répète chaque semaine au jour indiqué jusqu'à la date de fin. Sinon, l'atelier est ponctuel (une seule occurrence).
+                </p>
+            </div>
+            
+            <div class="mb-6 form-group">
+                <label class="flex items-center cursor-pointer">
+                    {{ workshop_form.is_active }}
+                    <span class="ml-3 text-sm font-semibold text-gray-700">{{ workshop_form.is_active.label }}</span>
+                </label>
+            </div>
+            
+            <div class="flex justify-end space-x-4 pt-4 border-t border-gray-200">
+                <button type="button" onclick="closeWorkshopModal()" class="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                    Annuler
+                </button>
+                <button type="submit" class="px-6 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-semibold">
+                    <i class="fas fa-save mr-2"></i>{% if edit_mode %}Modifier l'Atelier{% else %}Créer l'Atelier{% endif %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+

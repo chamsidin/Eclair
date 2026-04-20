@@ -1,0 +1,255 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/admin-dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard min-h-screen py-8">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <a href="{% url 'App:admin_dashboard' %}" class="text-gray-600 hover:text-primary">
+                            <i class="fas fa-arrow-left text-xl"></i>
+                        </a>
+                        <h1 class="text-3xl font-bold text-gray-900">Rapports des Dons</h1>
+                    </div>
+                    <p class="text-gray-600">Historique et statistiques des dons</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <!-- Total Amount -->
+            <div class="bg-gradient-to-br from-primary to-secondary rounded-lg shadow-md p-6 text-white">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-white text-opacity-90 text-sm font-medium">Total Collecté</p>
+                        <p class="text-3xl font-bold">{{ total_amount|floatformat:2 }}€</p>
+                    </div>
+                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-euro-sign text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Total Count -->
+            <div class="bg-white rounded-lg shadow-md p-6 border-2 border-green-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">Dons Complétés</p>
+                        <p class="text-3xl font-bold text-green-600">{{ total_count }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-600 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Count -->
+            <div class="bg-white rounded-lg shadow-md p-6 border-2 border-yellow-200">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-600 text-sm font-medium">En Attente</p>
+                        <p class="text-3xl font-bold text-yellow-600">{{ pending_count }}</p>
+                    </div>
+                    <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-clock text-yellow-600 text-2xl"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Top Donors -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Top 10 Donateurs</h3>
+                <div class="space-y-3">
+                    {% for donor in top_donors %}
+                    <div class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+                        <div>
+                            <p class="font-medium text-gray-900">
+                                {% if donor.donor__first_name and donor.donor__last_name %}
+                                    {{ donor.donor__first_name }} {{ donor.donor__last_name }}
+                                {% else %}
+                                    {{ donor.donor__username }}
+                                {% endif %}
+                            </p>
+                            <p class="text-sm text-gray-500">{{ donor.count }} don(s)</p>
+                        </div>
+                        <p class="font-bold text-green-600">{{ donor.total|floatformat:2 }}€</p>
+                    </div>
+                    {% empty %}
+                    <p class="text-gray-500 text-sm text-center">Aucun donateur pour le moment</p>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Monthly Statistics -->
+            <div class="bg-white rounded-lg shadow-md p-6 col-span-2">
+                <h3 class="text-lg font-semibold text-gray-900 mb-4">Statistiques Mensuelles</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="border-b border-gray-200">
+                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Mois</th>
+                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Montant</th>
+                                <th class="px-4 py-2 text-left text-sm font-medium text-gray-700">Nombre</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-200">
+                            {% for stat in monthly_stats %}
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-4 py-3 text-sm text-gray-900">{{ stat.month|date:"M Y" }}</td>
+                                <td class="px-4 py-3 text-sm font-semibold text-green-600">{{ stat.total|floatformat:2 }}€</td>
+                                <td class="px-4 py-3 text-sm text-gray-600">{{ stat.count }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="px-4 py-4 text-center text-gray-500">Aucune statistique disponible</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <form method="get" class="flex flex-wrap gap-4 items-end">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Filtrer par statut</label>
+                    <select name="status" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary">
+                        <option value="">Tous les statuts</option>
+                        <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>En attente</option>
+                        <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Complété</option>
+                        <option value="failed" {% if status_filter == 'failed' %}selected{% endif %}>Échoué</option>
+                        <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Annulé</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Filtrer par type</label>
+                    <select name="type" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary">
+                        <option value="">Tous les types</option>
+                        <option value="one_time" {% if type_filter == 'one_time' %}selected{% endif %}>Don unique</option>
+                        <option value="monthly" {% if type_filter == 'monthly' %}selected{% endif %}>Mensuel</option>
+                        <option value="annual" {% if type_filter == 'annual' %}selected{% endif %}>Annuel</option>
+                    </select>
+                </div>
+                <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-colors">
+                    Filtrer
+                </button>
+                <a href="{% url 'App:admin_donations_list' %}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                    Réinitialiser
+                </a>
+            </form>
+        </div>
+
+        <!-- Donations Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Donateur</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Montant</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date du don</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date de paiement</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Méthode</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for donation in donations %}
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex items-center">
+                                    <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+                                        <i class="fas fa-user text-white"></i>
+                                    </div>
+                                    <div class="ml-4">
+                                        {% if donation.donor %}
+                                            <div class="text-sm font-medium text-gray-900">{{ donation.donor.get_full_name|default:donation.donor.username }}</div>
+                                            <div class="text-sm text-gray-500">{{ donation.donor.email }}</div>
+                                        {% elif donation.donor_name %}
+                                            <div class="text-sm font-medium text-gray-900">{{ donation.donor_name }}</div>
+                                            <div class="text-sm text-gray-500">{{ donation.donor_email|default:"Email non fourni" }}</div>
+                                        {% else %}
+                                            <div class="text-sm font-medium text-gray-900">Donateur anonyme</div>
+                                            <div class="text-sm text-gray-500">{{ donation.donor_email|default:"Email non fourni" }}</div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="text-lg font-bold text-green-600">{{ donation.amount }}€</span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    {% if donation.donation_type == 'one_time' %}bg-blue-100 text-blue-800
+                                    {% elif donation.donation_type == 'monthly' %}bg-purple-100 text-purple-800
+                                    {% elif donation.donation_type == 'annual' %}bg-indigo-100 text-indigo-800
+                                    {% endif %}">
+                                    {{ donation.get_donation_type_display }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    {% if donation.status == 'completed' %}bg-green-100 text-green-800
+                                    {% elif donation.status == 'pending' %}bg-yellow-100 text-yellow-800
+                                    {% elif donation.status == 'failed' %}bg-red-100 text-red-800
+                                    {% elif donation.status == 'cancelled' %}bg-gray-100 text-gray-800
+                                    {% endif %}">
+                                    {{ donation.get_status_display }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ donation.donation_date|date:"d/m/Y H:i" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {% if donation.payment_date %}
+                                    {{ donation.payment_date|date:"d/m/Y H:i" }}
+                                {% else %}
+                                    N/A
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ donation.payment_method|default:"N/A" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ donation.transaction_id|default:"N/A"|truncatechars:15 }}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="8" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-heart text-4xl mb-2"></i>
+                                <p>Aucun don trouvé</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.body.classList.add('dark-theme');
+</script>
+{% endblock %}

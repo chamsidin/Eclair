@@ -1,0 +1,372 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}Rapport de Présence - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/intervenant-dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="intervenant-dashboard min-h-screen py-8">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center mb-2">
+                        <a href="{% url 'App:intervenant_dashboard' %}" class="text-gray-600 hover:text-primary mr-3">
+                            <i class="fas fa-arrow-left text-xl"></i>
+                        </a>
+                        <h1 class="text-3xl font-bold text-gray-900">Rapport de Présence</h1>
+                    </div>
+                    <p class="text-gray-600">Gérez la présence des élèves dans vos ateliers</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Workshop Selection -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Sélectionner un atelier</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for workshop in workshops %}
+                <a href="?workshop={{ workshop.id }}&date={{ selected_date|date:'Y-m-d' }}" 
+                   class="border {% if selected_workshop.id == workshop.id %}border-2 border-primary bg-blue-50{% else %}border-gray-200 hover:border-primary{% endif %} rounded-lg p-4 cursor-pointer hover:shadow-lg transition-shadow">
+                    <div class="flex items-start justify-between mb-2">
+                        <div>
+                            <h4 class="font-semibold text-gray-900">{{ workshop.title }}</h4>
+                            <p class="text-sm text-gray-600">{{ workshop.establishment.name }}</p>
+                        </div>
+                        <span class="bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded-full">
+                            Actif
+                        </span>
+                    </div>
+                    <div class="text-xs text-gray-500 space-y-1">
+                        <p><i class="fas fa-calendar mr-2"></i>{{ workshop.get_day_display }} {{ workshop.start_date|date:'H:i' }} - {{ workshop.end_date|date:'H:i' }}</p>
+                        <p><i class="fas fa-users mr-2"></i>{{ workshop.enrollments.count }}/{{ workshop.max_students }} élèves inscrits</p>
+                    </div>
+                </a>
+                {% empty %}
+                <div class="col-span-3 text-center text-gray-500 py-8">
+                    <p>Aucun atelier disponible</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Date Selection & Statistics -->
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6 mb-8">
+            <!-- Date Selector -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Séance</h3>
+                    <form method="GET" class="space-y-4" id="dateSelectionForm">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Date de séance</label>
+                            <input type="text" 
+                                   id="session-date-picker"
+                                   name="date"
+                                   value="{{ selected_date|date:'Y-m-d' }}" 
+                                   placeholder="Sélectionner une date"
+                                   class="w-full px-3 py-2 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white"
+                                   {% if not selected_workshop %}disabled{% endif %}
+                                   readonly>
+                        </div>
+                        {% if selected_workshop %}
+                        <input type="hidden" name="workshop" value="{{ selected_workshop.id }}">
+                        <button type="submit" class="w-full bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors">
+                            <i class="fas fa-calendar-check mr-2"></i>
+                            Charger la séance
+                        </button>
+                        {% else %}
+                        <p class="text-sm text-gray-500 text-center">Sélectionnez un atelier</p>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+
+            <!-- Statistics Cards -->
+            <div class="lg:col-span-3">
+                {% if selected_workshop and attendance_data %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Present -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Présents</p>
+                                <p class="text-3xl font-bold text-green-600">{{ stats.present }}</p>
+                                <p class="text-xs text-gray-500 mt-1">{% if stats.total > 0 %}{% widthratio stats.present stats.total 100 %}%{% else %}0%{% endif %} du total</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Absent -->
+                    <div class="bg-white rounded-lg shadow-md p-6">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Absents</p>
+                                <p class="text-3xl font-bold text-red-600">{{ stats.absent }}</p>
+                                <p class="text-xs text-gray-500 mt-1">{% if stats.total > 0 %}{% widthratio stats.absent stats.total 100 %}%{% else %}0%{% endif %} du total</p>
+                            </div>
+                            <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                                <i class="fas fa-times-circle text-red-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="bg-white rounded-lg shadow-md p-6 text-center text-gray-500">
+                    <p>Sélectionnez un atelier et une date pour voir les statistiques</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Attendance Table -->
+        {% if selected_workshop and attendance_data %}
+        <form method="POST" action="{% url 'App:save_attendance' %}" id="attendanceForm">
+            {% csrf_token %}
+            <input type="hidden" name="workshop_id" value="{{ selected_workshop.id }}">
+            <input type="hidden" name="date" value="{{ selected_date|date:'Y-m-d' }}">
+            
+            <!-- Attendance Sheet Info -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                <div class="flex items-center justify-between mb-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-clipboard-list text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-900">Feuille de présence</h3>
+                            <p class="text-sm text-gray-500">
+                                {% if attendance_sheet %}
+                                    <span class="text-green-600">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        Créée le {{ attendance_sheet.created_at|date:'d/m/Y à H:i' }}
+                                        {% if attendance_sheet.created_by %}par {{ attendance_sheet.created_by.get_full_name|default:attendance_sheet.created_by.username }}{% endif %}
+                                    </span>
+                                {% else %}
+                                    <span class="text-blue-600">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Nouvelle feuille (sera créée à l'enregistrement)
+                                    </span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                    {% if attendance_sheet and attendance_sheet.is_finalized %}
+                    <span class="bg-red-100 text-red-800 text-sm font-medium px-3 py-1 rounded-full">
+                        <i class="fas fa-lock mr-1"></i>
+                        Finalisée
+                    </span>
+                    {% endif %}
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Notes générales de la séance</label>
+                    <textarea 
+                        name="session_notes"
+                        class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white"
+                        rows="3"
+                        placeholder="Ajoutez des notes générales sur cette séance (comportement global, points importants, etc...)..."
+                        {% if attendance_sheet and attendance_sheet.is_finalized %}disabled{% endif %}
+                    >{% if attendance_sheet %}{{ attendance_sheet.notes }}{% endif %}</textarea>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <div class="flex items-center justify-between mb-6">
+                    <h3 class="text-lg font-semibold text-gray-900">
+                        Liste des présences - {{ selected_date|date:'d F Y' }}
+                    </h3>
+                    <div class="flex items-center space-x-4">
+                        <button type="submit" class="bg-green-100 text-green-600 border-2 border-green-600 px-4 py-2 rounded-lg hover:bg-green-200 transition-colors font-medium" {% if attendance_sheet and attendance_sheet.is_finalized %}disabled{% endif %}>
+                            <i class="fas fa-save mr-2"></i>
+                            {% if attendance_sheet %}Mettre à jour{% else %}Créer et enregistrer{% endif %}
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Élève
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Classe
+                                </th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Présence
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    Notes
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for data in attendance_data %}
+                            <tr class="hover:bg-gray-50" data-enrollment-id="{{ data.enrollment.id }}">
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-primary rounded-full flex items-center justify-center mr-3">
+                                            <span class="text-white text-sm font-medium">{{ data.student.first_name|first }}{{ data.student.last_name|first }}</span>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-medium text-gray-900">{{ data.student.first_name }} {{ data.student.last_name }}</div>
+                                            <div class="text-sm text-gray-500">{{ data.student.email|default:"-" }}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {{ data.student.classe|default:"-" }}
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-center">
+                                    <input type="hidden" name="status_{{ data.enrollment.id }}" value="{{ data.status }}" class="status-input">
+                                    <div class="flex justify-center space-x-2">
+                                        <button type="button" data-status="present" class="status-btn w-10 h-10 {% if data.status == 'present' %}bg-green-100 text-green-600 border-2 border-green-600{% else %}bg-gray-100 text-gray-600{% endif %} rounded-lg hover:bg-green-200 transition-colors" {% if attendance_sheet and attendance_sheet.is_finalized %}disabled{% endif %}>
+                                            <i class="fas fa-check"></i>
+                                        </button>
+                                        <button type="button" data-status="absent" class="status-btn w-10 h-10 {% if data.status == 'absent' %}bg-red-100 text-red-600 border-2 border-red-600{% else %}bg-gray-100 text-gray-600{% endif %} rounded-lg hover:bg-red-200 transition-colors" {% if attendance_sheet and attendance_sheet.is_finalized %}disabled{% endif %}>
+                                            <i class="fas fa-times"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <input type="text" 
+                                           name="notes_{{ data.enrollment.id }}"
+                                           value="{{ data.notes }}"
+                                           placeholder="Ajouter une note..." 
+                                           class="w-full px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent focus:bg-white text-sm"
+                                           {% if attendance_sheet and attendance_sheet.is_finalized %}disabled{% endif %}>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="px-6 py-8 text-center text-gray-500">
+                                    Aucun étudiant inscrit dans cet atelier
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                </table>
+            </div>
+            
+            <!-- Finalize Section -->
+            {% if attendance_sheet and not attendance_sheet.is_finalized %}
+            <div class="mt-6 p-4 bg-white border border-gray-200 rounded-lg">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-lock text-yellow-600"></i>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-semibold text-gray-900">Finaliser la feuille de présence</h4>
+                            <p class="text-xs text-gray-600">Une fois finalisée, la feuille ne pourra plus être modifiée.</p>
+                        </div>
+                    </div>
+                    <button type="button" 
+                            onclick="if(confirm('Êtes-vous sûr de vouloir finaliser cette feuille de présence ? Cette action est irréversible.')) { document.getElementById('finalizeForm').submit(); }"
+                            class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition-colors">
+                        <i class="fas fa-lock mr-2"></i>
+                        Finaliser
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        </form>
+        
+        <!-- Finalize Form (hidden) -->
+        {% if attendance_sheet and not attendance_sheet.is_finalized %}
+        <form id="finalizeForm" method="POST" action="{% url 'App:finalize_attendance_sheet' attendance_sheet.id %}" style="display: none;">
+            {% csrf_token %}
+        </form>
+        {% endif %}
+        {% else %}
+        <div class="bg-white rounded-lg shadow-md p-6 text-center text-gray-500">
+            <i class="fas fa-calendar-alt text-4xl mb-4"></i>
+            <p class="text-lg">Sélectionnez un atelier et une date pour marquer les présences</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.body.classList.add('dark-theme');
+
+    // Initialize Flatpickr for session date picker
+    {% if selected_workshop %}
+    const validDates = {{ valid_dates_json|safe }};
+    
+    const datePicker = flatpickr("#session-date-picker", {
+        locale: "fr",
+        dateFormat: "Y-m-d",
+        altInput: true,
+        altFormat: "d/m/Y",
+        enable: validDates,
+        onChange: function(selectedDates, dateStr, instance) {
+            // Auto-submit form when date is selected
+            document.getElementById('dateSelectionForm').submit();
+        },
+        onReady: function(selectedDates, dateStr, instance) {
+            if (validDates.length === 0) {
+                instance.input.placeholder = "Aucune séance disponible";
+            }
+        },
+        disable: [
+            function(date) {
+                // Disable all dates that are not in validDates
+                const dateStr = date.toISOString().split('T')[0];
+                return !validDates.includes(dateStr);
+            }
+        ],
+        disableMobile: true
+    });
+    {% endif %}
+
+    // Handle attendance button clicks
+    document.querySelectorAll('tbody tr[data-enrollment-id]').forEach(row => {
+        const buttons = row.querySelectorAll('.status-btn');
+        const hiddenInput = row.querySelector('.status-input');
+        
+        buttons.forEach((button) => {
+            button.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const newStatus = this.getAttribute('data-status');
+                
+                // Remove active state from all buttons in this row
+                buttons.forEach(btn => {
+                    btn.classList.remove('border-2', 'border-green-600', 'border-red-600');
+                    btn.classList.remove('bg-green-100', 'bg-red-100');
+                    btn.classList.add('bg-gray-100');
+                    btn.classList.remove('text-green-600', 'text-red-600');
+                    btn.classList.add('text-gray-600');
+                });
+                
+                // Add active state to clicked button
+                this.classList.remove('bg-gray-100', 'text-gray-600');
+                
+                if (newStatus === 'present') {
+                    this.classList.add('bg-green-100', 'text-green-600', 'border-2', 'border-green-600');
+                } else if (newStatus === 'absent') {
+                    this.classList.add('bg-red-100', 'text-red-600', 'border-2', 'border-red-600');
+                }
+                
+                // Update hidden input value
+                hiddenInput.value = newStatus;
+            });
+        });
+    });
+</script>
+{% endblock %}
+

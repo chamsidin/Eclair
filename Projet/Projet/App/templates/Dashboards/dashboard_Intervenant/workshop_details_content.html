@@ -1,0 +1,113 @@
+<!-- Workshop Information Section -->
+<div style="background: rgba(47, 231, 209, 0.04); border: 1px solid rgba(47, 231, 209, 0.12); border-radius: 12px; padding: 20px; margin-bottom: 24px;">
+    <h3 style="color: #2fe7d1; font-size: 1.25rem; font-weight: 600; margin-bottom: 20px;">
+        <i class="fas fa-info-circle mr-2"></i>Informations de l'atelier
+    </h3>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div>
+            <div style="margin-bottom: 16px;">
+                <p style="color: rgba(234, 246, 243, 0.5); font-size: 0.875rem; margin-bottom: 4px;">Titre</p>
+                <p style="color: #eaf6f3; font-weight: 500;">{{ workshop.title }}</p>
+            </div>
+            <div style="margin-bottom: 16px;">
+                <p style="color: rgba(234, 246, 243, 0.5); font-size: 0.875rem; margin-bottom: 4px;">Établissement</p>
+                <p style="color: #eaf6f3; font-weight: 500;">{{ workshop.establishment.name }}</p>
+            </div>
+            <div style="margin-bottom: 16px;">
+                <p style="color: rgba(234, 246, 243, 0.5); font-size: 0.875rem; margin-bottom: 4px;">Niveau</p>
+                <p style="color: #eaf6f3; font-weight: 500;">{{ workshop.level.name|default:"Non spécifié" }}</p>
+            </div>
+            <div style="margin-bottom: 16px;">
+                <p style="color: rgba(234, 246, 243, 0.5); font-size: 0.875rem; margin-bottom: 4px;">Salle</p>
+                <p style="color: #eaf6f3; font-weight: 500;">{{ workshop.room.name|default:"Non spécifiée" }}</p>
+            </div>
+            <div style="margin-bottom: 16px;">
+                <p style="color: rgba(234, 246, 243, 0.5); font-size: 0.875rem; margin-bottom: 4px;">Jour de la semaine</p>
+                <p style="color: #eaf6f3; font-weight: 500;">{{ workshop.get_day_display }}</p>
+            </div>
+        </div>
+        <div>
+            <div style="margin-bottom: 16px;">
+                <p style="color: rgba(234, 246, 243, 0.5); font-size: 0.875rem; margin-bottom: 4px;">Date de début</p>
+                <p style="color: #eaf6f3; font-weight: 500;">{{ workshop.start_date|date:"d/m/Y H:i" }}</p>
+            </div>
+            <div style="margin-bottom: 16px;">
+                <p style="color: rgba(234, 246, 243, 0.5); font-size: 0.875rem; margin-bottom: 4px;">Date de fin</p>
+                <p style="color: #eaf6f3; font-weight: 500;">{{ workshop.end_date|date:"d/m/Y H:i" }}</p>
+            </div>
+            <div style="margin-bottom: 16px;">
+                <p style="color: rgba(234, 246, 243, 0.5); font-size: 0.875rem; margin-bottom: 4px;">Élèves inscrits</p>
+                <p style="color: #eaf6f3; font-weight: 500;">{{ total_enrolled }} / {{ workshop.max_students }} élèves</p>
+            </div>
+            <div style="margin-bottom: 16px;">
+                <p style="color: rgba(234, 246, 243, 0.5); font-size: 0.875rem; margin-bottom: 4px;">Type</p>
+                <p style="color: #eaf6f3; font-weight: 500;">
+                    {% if workshop.is_recurrent %}
+                    <i class="fas fa-repeat mr-1"></i>Atelier récurrent (chaque semaine)
+                    {% else %}
+                    <i class="fas fa-calendar-day mr-1"></i>Atelier ponctuel (une seule fois)
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+    <div style="margin-top: 20px;">
+        <p style="color: rgba(234, 246, 243, 0.5); font-size: 0.875rem; margin-bottom: 4px;">Description</p>
+        <p style="color: #eaf6f3; line-height: 1.6;">{{ workshop.description }}</p>
+    </div>
+</div>
+
+<!-- Students List Section -->
+<div style="background: rgba(47, 231, 209, 0.04); border: 1px solid rgba(47, 231, 209, 0.12); border-radius: 12px; padding: 20px;">
+    <h3 style="color: #2fe7d1; font-size: 1.25rem; font-weight: 600; margin-bottom: 20px;">
+        <i class="fas fa-users mr-2"></i>Élèves inscrits ({{ enrollments.count }})
+    </h3>
+    {% if enrollments %}
+        <div class="space-y-3">
+            {% for enrollment in enrollments %}
+            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(160, 230, 220, 0.08); border-radius: 10px; padding: 16px; display: flex; align-items: center; justify-content: between;">
+                <div style="display: flex; align-items: center; flex: 1;">
+                    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #2fe7d1 0%, #40bfff 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px;">
+                        <span style="color: #061222; font-weight: 600; font-size: 0.875rem;">
+                            {{ enrollment.student.first_name|first }}{{ enrollment.student.last_name|first }}
+                        </span>
+                    </div>
+                    <div style="flex: 1;">
+                        <p style="color: #eaf6f3; font-weight: 600; margin-bottom: 2px;">
+                            {{ enrollment.student.first_name }} {{ enrollment.student.last_name }}
+                        </p>
+                        <p style="color: rgba(234, 246, 243, 0.5); font-size: 0.875rem;">
+                            {{ enrollment.student.email|default:"Email non renseigné" }}
+                        </p>
+                        <p style="color: rgba(234, 246, 243, 0.5); font-size: 0.875rem;">
+                            {{ enrollment.student.establishment.name }}
+                        </p>
+                    </div>
+                    <div style="text-align: right;">
+                        {% if enrollment.is_confirmed %}
+                        <span style="display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500; background: rgba(34, 197, 94, 0.15); color: #22c55e;">
+                            <i class="fas fa-check-circle mr-1"></i>
+                            Confirmé
+                        </span>
+                        {% else %}
+                        <span style="display: inline-block; padding: 6px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 500; background: rgba(234, 179, 8, 0.15); color: #eab308;">
+                            <i class="fas fa-clock mr-1"></i>
+                            En attente
+                        </span>
+                        {% endif %}
+                        <p style="color: rgba(234, 246, 243, 0.4); font-size: 0.75rem; margin-top: 4px;">
+                            Inscrit le {{ enrollment.enrollment_date|date:"d/m/Y" }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="text-align: center; padding: 40px 20px;">
+            <i class="fas fa-users" style="color: rgba(47, 231, 209, 0.3); font-size: 3rem; margin-bottom: 16px;"></i>
+            <p style="color: rgba(234, 246, 243, 0.5);">Aucun élève inscrit à cet atelier</p>
+        </div>
+    {% endif %}
+</div>
+

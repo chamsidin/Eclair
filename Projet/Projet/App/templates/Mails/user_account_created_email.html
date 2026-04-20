@@ -1,0 +1,52 @@
+{% extends 'Mails/base_email.html' %}
+
+{% block email_content %}
+    <div class="header">
+        <h2>Bienvenue aux Éclaireurs !</h2>
+    </div>
+    
+    <div class="content">
+        <div class="success-box">
+            <strong>✓ Votre compte a été créé avec succès !</strong>
+        </div>
+        
+        <p>Bonjour {% if user.first_name %}{{ user.first_name }} {{ user.last_name }}{% else %}{{ user.username }}{% endif %},</p>
+        
+        <p>Un compte a été créé pour vous sur la plateforme Les Éclaireurs par notre équipe administrative.</p>
+        
+        <div class="info-box">
+            <p><span class="label">Nom d'utilisateur :</span> {{ user.username }}</p>
+            <p><span class="label">Email :</span> {{ user.email }}</p>
+            <p><span class="label">Rôle :</span> {{ user.get_role_display }}</p>
+        </div>
+        
+        <p>Pour activer votre compte, vous devez définir votre mot de passe en cliquant sur le lien ci-dessous :</p>
+        
+        <div style="text-align: center; margin: 25px 0;">
+            <a href="{{ protocol }}://{{ domain }}{% url 'App:password_reset_confirm' uidb64=uid token=token %}" 
+               style="display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #7290e0, #6fafac); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                Définir mon mot de passe
+            </a>
+        </div>
+        
+        <p>Ou copiez-collez ce lien dans votre navigateur :</p>
+        <p style="word-break: break-all; color: #7290e0;">
+            {{ protocol }}://{{ domain }}{% url 'App:password_reset_confirm' uidb64=uid token=token %}
+        </p>
+        
+        <p><strong>Ce lien est valide pendant 7 jours.</strong></p>
+        
+        <p>Une fois votre mot de passe défini, vous pourrez vous connecter et accéder à toutes les fonctionnalités de la plateforme.</p>
+        
+        <p>Si vous n'avez pas demandé la création de ce compte ou si vous pensez qu'il s'agit d'une erreur, veuillez nous contacter immédiatement.</p>
+        
+        <p>Cordialement,<br>
+        <strong>L'équipe des Éclaireurs</strong></p>
+    </div>
+    
+    <div class="footer">
+        <p>Les Éclaireurs - Plateforme d'accompagnement scolaire</p>
+        <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+    </div>
+{% endblock %}
+

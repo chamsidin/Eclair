@@ -1,0 +1,563 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/admin-dashboard.css' %}">
+<style>
+    /* Custom scrollbar styling for the table */
+    .overflow-x-auto::-webkit-scrollbar {
+        height: 12px;
+    }
+    
+    .overflow-x-auto::-webkit-scrollbar-track {
+        background: #1f2937;
+        border-radius: 10px;
+    }
+    
+    .overflow-x-auto::-webkit-scrollbar-thumb {
+        background: #4b5563;
+        border-radius: 10px;
+    }
+    
+    .overflow-x-auto::-webkit-scrollbar-thumb:hover {
+        background: #6b7280;
+    }
+    
+    /* Firefox scrollbar */
+    .overflow-x-auto {
+        scrollbar-width: thin;
+        scrollbar-color: #4b5563 #1f2937;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="admin-dashboard min-h-screen py-8">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <a href="{% url 'App:admin_dashboard' %}" class="text-gray-600 hover:text-primary">
+                            <i class="fas fa-arrow-left text-xl"></i>
+                        </a>
+                        <h1 class="text-3xl font-bold text-gray-900">Liste des Ateliers</h1>
+                    </div>
+                    <p class="text-gray-600">Gestion de tous les ateliers et workshops</p>
+                </div>
+                <button onclick="openWorkshopModal()" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors font-semibold">
+                    <i class="fas fa-plus mr-2"></i>Créer un Atelier
+                </button>
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="mb-4 p-4 rounded-lg {% if message.tags == 'error' %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Filters -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <form method="get" class="flex flex-wrap gap-4 items-end">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Filtrer par établissement</label>
+                    <select name="establishment" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary">
+                        <option value="">Tous les établissements</option>
+                        {% for establishment in establishments %}
+                        <option value="{{ establishment.id }}" {% if establishment_filter == establishment.id|stringformat:"s" %}selected{% endif %}>
+                            {{ establishment.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Statut</label>
+                    <select name="status" class="border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-primary">
+                        <option value="">Tous</option>
+                        <option value="active" {% if status_filter == 'active' %}selected{% endif %}>Actifs</option>
+                        <option value="inactive" {% if status_filter == 'inactive' %}selected{% endif %}>Inactifs</option>
+                    </select>
+                </div>
+                <button type="submit" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-colors">
+                    Filtrer
+                </button>
+                <a href="{% url 'App:admin_workshops_list' %}" class="bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                    Réinitialiser
+                </a>
+            </form>
+        </div>
+
+        <!-- Workshops Table -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Atelier</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Établissement</th>
+                            <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Inscriptions</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Intervenant</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Niveau</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jour</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Salle</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacité</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Début</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date Fin</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Heure Début</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Heure Fin</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Statut</th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for workshop in workshops %}
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4">
+                                <div class="text-sm font-medium text-gray-900">{{ workshop.title }}</div>
+                                <div class="text-sm text-gray-500 line-clamp-2">{{ workshop.description|truncatewords:10 }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ workshop.establishment.name }}</div>
+                                <div class="text-sm text-gray-500">{{ workshop.establishment.city }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-center">
+                                <button onclick="openWorkshopEnrollmentsModal({{ workshop.id }})" 
+                                        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
+                                        title="Voir les inscriptions">
+                                    <i class="fas fa-users"></i>
+                                    <span class="ml-1 text-xs font-semibold">{{ workshop.enrollments.count }}</span>
+                                </button>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{ workshop.intervenant.get_full_name|default:workshop.intervenant.username }}</div>
+                                <div class="text-sm text-gray-500">{{ workshop.intervenant.email }}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if workshop.level %}
+                                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                                        {{ workshop.level.name }}
+                                    </span>
+                                {% else %}
+                                    <span class="text-sm text-gray-400">Non défini</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
+                                    {{ workshop.get_day_display }}
+                                </span>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if workshop.room %}
+                                    <div class="text-sm text-gray-900">{{ workshop.room.name }}</div>
+                                {% else %}
+                                    <span class="text-sm text-gray-400">Non assignée</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                {{ workshop.max_students }} places
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ workshop.start_date|date:"d/m/Y" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ workshop.end_date|date:"d/m/Y" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ workshop.start_date|date:"H:i" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                {{ workshop.end_date|date:"H:i" }}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if workshop.is_recurrent %}
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-purple-100 text-purple-800">
+                                        <i class="fas fa-repeat mr-1"></i>Récurrent
+                                    </span>
+                                {% else %}
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-orange-100 text-orange-800">
+                                        <i class="fas fa-calendar-day mr-1"></i>Ponctuel
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if workshop.is_active %}
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                                        Actif
+                                    </span>
+                                {% else %}
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">
+                                        Inactif
+                                    </span>
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <div class="flex space-x-2">
+                                    <a href="{% url 'App:admin_workshop_edit' workshop.id %}" 
+                                       class="text-blue-600 hover:text-blue-900 font-medium">
+                                        <i class="fas fa-edit mr-1"></i>Modifier
+                                    </a>
+                                    <button onclick="confirmDelete({{ workshop.id }}, '{{ workshop.title|escapejs }}')" 
+                                            class="text-red-600 hover:text-red-900 font-medium">
+                                        <i class="fas fa-trash mr-1"></i>Supprimer
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="15" class="px-6 py-8 text-center text-gray-500">
+                                <i class="fas fa-chalkboard-teacher text-4xl mb-2"></i>
+                                <p>Aucun atelier trouvé</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Weekly Calendar View -->
+        <div class="bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="px-6 py-4 bg-gray-50 border-b border-gray-200">
+                <div class="flex items-center justify-between">
+                    <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                        <i class="fas fa-calendar-week mr-3"></i>
+                        Calendrier Hebdomadaire des Ateliers
+                    </h2>
+                    <div class="flex items-center space-x-4">
+                        <div class="text-sm font-medium text-gray-600">
+                            <i class="fas fa-calendar mr-2"></i>
+                            Semaine du {{ week_start|date:"d/m/Y" }} au {{ week_end|date:"d/m/Y" }}
+                        </div>
+                        <div class="flex space-x-2">
+                            <a href="?week_offset={{ prev_week_offset }}{% if establishment_filter %}&establishment={{ establishment_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" 
+                               class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                                <i class="fas fa-chevron-left mr-1"></i>Semaine précédente
+                            </a>
+                            {% if not is_current_week %}
+                            <a href="?week_offset=0{% if establishment_filter %}&establishment={{ establishment_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" 
+                               class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors">
+                                <i class="fas fa-calendar-day mr-1"></i>Semaine actuelle
+                            </a>
+                            {% endif %}
+                            <a href="?week_offset={{ next_week_offset }}{% if establishment_filter %}&establishment={{ establishment_filter }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}" 
+                               class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300 transition-colors">
+                                Semaine suivante<i class="fas fa-chevron-right ml-1"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                    {% for day_info in week_days %}
+                    <div class="border border-gray-200 rounded-lg overflow-hidden bg-gray-50">
+                        <div class="bg-gray-100 border-b border-gray-200 px-4 py-3 font-semibold text-center text-gray-700">
+                            <div class="flex flex-col items-center">
+                                <div class="flex items-center mb-1">
+                                    <i class="fas fa-calendar-day mr-2"></i>
+                                    {% if day_info.day_name == 'monday' %}Lundi
+                                    {% elif day_info.day_name == 'tuesday' %}Mardi
+                                    {% elif day_info.day_name == 'wednesday' %}Mercredi
+                                    {% elif day_info.day_name == 'thursday' %}Jeudi
+                                    {% elif day_info.day_name == 'friday' %}Vendredi
+                                    {% elif day_info.day_name == 'saturday' %}Samedi
+                                    {% endif %}
+                                </div>
+                                <div class="text-xs font-medium text-gray-600">
+                                    {{ day_info.date|date:"d/m/Y" }}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-3 space-y-2 min-h-[200px]">
+                            {% for workshop in day_info.workshops %}
+                            <div class="bg-white rounded-lg p-3 border-l-4 {% if workshop.is_recurrent %}border-purple-500{% else %}border-orange-500{% endif %} hover:shadow-md transition-shadow cursor-pointer">
+                                <div class="flex items-start justify-between mb-1">
+                                    <div class="font-semibold text-sm text-gray-900 truncate flex-1" title="{{ workshop.title }}">
+                                        {{ workshop.title }}
+                                    </div>
+                                    {% if workshop.is_recurrent %}
+                                    <span class="ml-2 px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-xs flex-shrink-0" title="Atelier récurrent">
+                                        <i class="fas fa-repeat"></i>
+                                    </span>
+                                    {% else %}
+                                    <span class="ml-2 px-1.5 py-0.5 bg-orange-100 text-orange-700 rounded text-xs flex-shrink-0" title="Atelier ponctuel">
+                                        <i class="fas fa-calendar-day"></i>
+                                    </span>
+                                    {% endif %}
+                                </div>
+                                <div class="text-xs text-gray-600 mb-2">
+                                    <i class="fas fa-clock mr-1"></i>{{ workshop.start_date|date:"H:i" }} - {{ workshop.end_date|date:"H:i" }}
+                                </div>
+                                <div class="text-xs text-gray-700 flex items-center mb-1">
+                                    <i class="fas fa-user-tie mr-1 text-primary"></i>
+                                    <span class="truncate" title="{{ workshop.intervenant.get_full_name|default:workshop.intervenant.username }}">
+                                        {{ workshop.intervenant.get_full_name|default:workshop.intervenant.username }}
+                                    </span>
+                                </div>
+                                <div class="text-xs text-gray-600 flex items-center">
+                                    <i class="fas fa-building mr-1"></i>
+                                    <span class="truncate" title="{{ workshop.establishment.name }}">
+                                        {{ workshop.establishment.name }}
+                                    </span>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="text-center text-gray-400 text-sm py-4">
+                                <i class="fas fa-calendar-times text-2xl mb-2 block"></i>
+                                Aucun atelier
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <!-- Legend -->
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <div class="flex items-center justify-center flex-wrap gap-4 text-sm text-gray-600">
+                        <div class="flex items-center">
+                            <i class="fas fa-user-tie mr-2 text-primary"></i>
+                            <span>Intervenant</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-building mr-2 text-gray-600"></i>
+                            <span>Établissement</span>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-clock mr-2 text-gray-600"></i>
+                            <span>Horaires</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="px-2 py-1 bg-purple-100 text-purple-700 rounded mr-2">
+                                <i class="fas fa-repeat"></i>
+                            </span>
+                            <span>Récurrent (chaque semaine)</span>
+                        </div>
+                        <div class="flex items-center">
+                            <span class="px-2 py-1 bg-orange-100 text-orange-700 rounded mr-2">
+                                <i class="fas fa-calendar-day"></i>
+                            </span>
+                            <span>Ponctuel (une fois)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Include Workshop Creation Modal -->
+{% include 'Dashboards/dashboard_Admin/workshop_form_modal.html' %}
+
+<!-- Include Workshop Enrollments Modal -->
+{% include 'Dashboards/dashboard_Admin/workshop_enrollments_modal.html' %}
+
+<!-- Delete Confirmation Modal -->
+<div id="deleteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden z-50 flex items-center justify-center">
+    <div class="rounded-lg shadow-xl w-full max-w-md m-4" style="background-color: #1f2937;">
+        <div class="p-6">
+            <h3 class="text-xl font-bold text-white mb-4">
+                <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>Confirmer la suppression
+            </h3>
+            <p class="text-gray-300 mb-6">
+                Êtes-vous sûr de vouloir supprimer l'atelier "<span id="deleteWorkshopName" class="font-semibold text-white"></span>" ?
+                Cette action est irréversible.
+            </p>
+            <div class="flex justify-end space-x-4">
+                <button type="button" onclick="closeDeleteModal()" class="px-6 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                    Annuler
+                </button>
+                <form id="deleteForm" method="post" class="inline">
+                    {% csrf_token %}
+                    <button type="submit" class="px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors font-semibold">
+                        <i class="fas fa-trash mr-2"></i>Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.body.classList.add('dark-theme');
+
+    function openWorkshopModal() {
+        document.getElementById('workshopModal').classList.remove('hidden');
+    }
+    
+    function closeWorkshopModal() {
+        const modal = document.getElementById('workshopModal');
+        modal.classList.add('hidden');
+        // Redirect to list page if we're in edit mode (to clear edit mode)
+        {% if edit_mode %}
+            window.location.href = '{% url "App:admin_workshops_list" %}';
+        {% endif %}
+    }
+    
+    function openDeleteModal() {
+        document.getElementById('deleteModal').classList.remove('hidden');
+    }
+    
+    function closeDeleteModal() {
+        document.getElementById('deleteModal').classList.add('hidden');
+    }
+    
+    function confirmDelete(workshopId, workshopName) {
+        document.getElementById('deleteWorkshopName').textContent = workshopName;
+        document.getElementById('deleteForm').action = '{% url "App:admin_workshop_delete" 0 %}'.replace('0', workshopId);
+        openDeleteModal();
+    }
+    
+    // Close modals when clicking outside
+    document.getElementById('workshopModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeWorkshopModal();
+        }
+    });
+    
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeDeleteModal();
+        }
+    });
+    
+    // Auto-open modal if there are form errors or in edit mode
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if workshop_form.errors or edit_mode %}
+            openWorkshopModal();
+        {% endif %}
+    });
+    
+    function openWorkshopEnrollmentsModal(workshopId) {
+        const modal = document.getElementById('workshopEnrollmentsModal');
+        const modalContent = document.getElementById('workshopEnrollmentsModalContent');
+        
+        // Show loading state
+        modalContent.innerHTML = `
+            <div class="text-center py-8">
+                <i class="fas fa-spinner fa-spin text-3xl" style="color: #2fe7d1;"></i>
+                <p class="mt-4" style="color: rgba(234, 246, 243, 0.72);">Chargement...</p>
+            </div>
+        `;
+        
+        // Show the modal
+        modal.classList.remove('hidden');
+        
+        // Fetch workshop enrollments from server
+        fetch(`/ajax/workshop-enrollments/${workshopId}/`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    modalContent.innerHTML = data.html;
+                } else {
+                    modalContent.innerHTML = `
+                        <div class="text-center py-8">
+                            <i class="fas fa-exclamation-triangle text-3xl" style="color: #ff6b6b;"></i>
+                            <p class="mt-4" style="color: rgba(234, 246, 243, 0.72);">Erreur: ${data.error || 'Impossible de charger les inscriptions'}</p>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching workshop enrollments:', error);
+                modalContent.innerHTML = `
+                    <div class="text-center py-8">
+                        <i class="fas fa-exclamation-triangle text-3xl" style="color: #ff6b6b;"></i>
+                        <p class="mt-4" style="color: rgba(234, 246, 243, 0.72);">Erreur lors du chargement des inscriptions</p>
+                    </div>
+                `;
+            });
+    }
+    
+    function closeWorkshopEnrollmentsModal() {
+        const modal = document.getElementById('workshopEnrollmentsModal');
+        modal.classList.add('hidden');
+    }
+    
+    // Close modal when clicking outside
+    document.getElementById('workshopEnrollmentsModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeWorkshopEnrollmentsModal();
+        }
+    });
+    
+    // Load rooms when establishment changes
+    document.addEventListener('DOMContentLoaded', function() {
+        const establishmentSelect = document.getElementById('id_establishment');
+        const roomSelect = document.getElementById('id_room');
+        
+        // Store the initial room value in edit mode
+        {% if edit_mode and workshop_to_edit.room %}
+        const initialRoomId = {{ workshop_to_edit.room.id }};
+        {% else %}
+        const initialRoomId = null;
+        {% endif %}
+        
+        function loadRooms(establishmentId, roomIdToSelect) {
+            // Clear room select except the first option
+            const firstOption = roomSelect.querySelector('option[value=""]');
+            roomSelect.innerHTML = '';
+            if (firstOption) {
+                roomSelect.appendChild(firstOption);
+            } else {
+                roomSelect.innerHTML = '<option value="">Sélectionnez une salle (optionnel)</option>';
+            }
+            
+            if (establishmentId) {
+                // Fetch rooms for the selected establishment
+                fetch(`{% url 'App:get_rooms_by_establishment' %}?establishment_id=${establishmentId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success && data.rooms) {
+                            data.rooms.forEach(room => {
+                                const option = document.createElement('option');
+                                option.value = room.id;
+                                option.textContent = room.name;
+                                // Select the room if it matches
+                                if (roomIdToSelect && room.id == roomIdToSelect) {
+                                    option.selected = true;
+                                }
+                                roomSelect.appendChild(option);
+                            });
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error fetching rooms:', error);
+                    });
+            }
+        }
+        
+        if (establishmentSelect && roomSelect) {
+            // Load rooms on establishment change
+            establishmentSelect.addEventListener('change', function() {
+                loadRooms(this.value, null);
+            });
+            
+            // Load rooms if establishment is already selected (e.g., form errors or edit mode)
+            if (establishmentSelect.value) {
+                // In edit mode, use initialRoomId; otherwise try to get from form
+                let roomIdToSelect = initialRoomId;
+                if (!roomIdToSelect) {
+                    const selectedRoomValue = roomSelect.value;
+                    if (selectedRoomValue) {
+                        roomIdToSelect = selectedRoomValue;
+                    }
+                }
+                loadRooms(establishmentSelect.value, roomIdToSelect);
+            }
+        }
+    });
+</script>
+{% endblock %}
+

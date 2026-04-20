@@ -1,0 +1,145 @@
+<div class="space-y-6">
+    <!-- Student Information Section -->
+    <div class="rounded-lg p-6" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(160, 230, 220, 0.12);">
+        <h3 class="text-lg font-semibold mb-4 flex items-center" style="color: #eaf6f3;">
+            <i class="fas fa-user-graduate mr-2" style="color: #2fe7d1;"></i>
+            Informations de l'Élève
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Prénom</p>
+                <p class="text-base" style="color: #eaf6f3;">{{ enrollment.student.first_name }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Nom</p>
+                <p class="text-base" style="color: #eaf6f3;">{{ enrollment.student.last_name }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Établissement</p>
+                <p class="text-base" style="color: #eaf6f3;">{{ enrollment.student.establishment.name }}</p>
+            </div>
+            {% if enrollment.student.birth_date %}
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Date de naissance</p>
+                <p class="text-base" style="color: #eaf6f3;">{{ enrollment.student.birth_date|date:"d/m/Y" }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Parent Information Section -->
+    {% if enrollment.student.parent %}
+    <div class="rounded-lg p-6" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(160, 230, 220, 0.12);">
+        <h3 class="text-lg font-semibold mb-4 flex items-center" style="color: #eaf6f3;">
+            <i class="fas fa-user mr-2" style="color: #2fe7d1;"></i>
+            Informations du Parent
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Nom complet</p>
+                <p class="text-base" style="color: #eaf6f3;">{{ enrollment.student.parent.get_full_name|default:enrollment.student.parent.username }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Email</p>
+                <p class="text-base" style="color: #eaf6f3;">
+                    <a href="mailto:{{ enrollment.student.parent.email }}" style="color: #2fe7d1; text-decoration: underline;">
+                        {{ enrollment.student.parent.email }}
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Workshop Information Section -->
+    <div class="rounded-lg p-6" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(160, 230, 220, 0.12);">
+        <h3 class="text-lg font-semibold mb-4 flex items-center" style="color: #eaf6f3;">
+            <i class="fas fa-chalkboard mr-2" style="color: #2fe7d1;"></i>
+            Informations de l'Atelier
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Titre</p>
+                <p class="text-base font-semibold" style="color: #eaf6f3;">{{ enrollment.workshop.title }}</p>
+            </div>
+            {% if enrollment.workshop.level %}
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Niveau</p>
+                <p class="text-base" style="color: #eaf6f3;">{{ enrollment.workshop.level.name }}</p>
+            </div>
+            {% endif %}
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Établissement</p>
+                <p class="text-base" style="color: #eaf6f3;">{{ enrollment.workshop.establishment.name }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Intervenant</p>
+                <p class="text-base" style="color: #eaf6f3;">{{ enrollment.workshop.intervenant.get_full_name|default:enrollment.workshop.intervenant.username }}</p>
+            </div>
+            {% if enrollment.workshop.room %}
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Salle</p>
+                <p class="text-base" style="color: #eaf6f3;">{{ enrollment.workshop.room.name }}</p>
+            </div>
+            {% endif %}
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Jour de la semaine</p>
+                <p class="text-base" style="color: #eaf6f3;">{{ enrollment.workshop.get_day_display }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Date de début</p>
+                <p class="text-base" style="color: #eaf6f3;">{{ enrollment.workshop.start_date|date:"d/m/Y à H:i" }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Date de fin</p>
+                <p class="text-base" style="color: #eaf6f3;">{{ enrollment.workshop.end_date|date:"d/m/Y à H:i" }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Places disponibles</p>
+                <p class="text-base" style="color: #eaf6f3;">
+                    {{ enrollment.workshop.max_students }} places max
+                </p>
+            </div>
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Type</p>
+                <p class="text-base" style="color: #eaf6f3;">
+                    {% if enrollment.workshop.is_recurrent %}
+                        <span style="color: #2fe7d1;"><i class="fas fa-sync-alt mr-1"></i>Récurrent</span>
+                    {% else %}
+                        <span style="color: rgba(234, 246, 243, 0.65);"><i class="fas fa-calendar-day mr-1"></i>Ponctuel</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+        {% if enrollment.workshop.description %}
+        <div class="mt-4 pt-4" style="border-top: 1px solid rgba(160, 230, 220, 0.12);">
+            <p class="text-sm font-medium mb-2" style="color: rgba(234, 246, 243, 0.65);">Description</p>
+            <p class="text-base leading-relaxed" style="color: rgba(234, 246, 243, 0.82); white-space: pre-wrap;">{{ enrollment.workshop.description }}</p>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Enrollment Information Section -->
+    <div class="rounded-lg p-6" style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(160, 230, 220, 0.12);">
+        <h3 class="text-lg font-semibold mb-4 flex items-center" style="color: #eaf6f3;">
+            <i class="fas fa-clipboard-list mr-2" style="color: #2fe7d1;"></i>
+            Informations de l'Inscription
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Date d'inscription</p>
+                <p class="text-base" style="color: #eaf6f3;">{{ enrollment.enrollment_date|date:"d/m/Y à H:i" }}</p>
+            </div>
+            <div>
+                <p class="text-sm font-medium" style="color: rgba(234, 246, 243, 0.65);">Statut</p>
+                <p class="text-base">
+                    {% if enrollment.is_confirmed %}
+                        <span style="color: #2fe7d1;"><i class="fas fa-check-circle mr-1"></i>Confirmée</span>
+                    {% else %}
+                        <span style="color: #ffa500;"><i class="fas fa-clock mr-1"></i>En attente</span>
+                    {% endif %}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

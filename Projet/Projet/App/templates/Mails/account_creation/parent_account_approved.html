@@ -1,0 +1,63 @@
+{% extends 'Mails/base_email.html' %}
+
+{% block email_content %}
+    <div class="header">
+        <h2>Votre demande a été approuvée !</h2>
+    </div>
+    
+    <div class="content">
+        <div class="success-box">
+            <strong>✓ Félicitations ! Votre compte a été créé avec succès.</strong>
+        </div>
+        
+        <p>Bonjour {{ parent_first_name }} {{ parent_last_name }},</p>
+        
+        <p>Nous avons le plaisir de vous informer que votre demande d'inscription a été approuvée.</p>
+        
+        <div class="info-box">
+            <p><span class="label">Nom d'utilisateur :</span> {{ username }}</p>
+            <p><span class="label">Email :</span> {{ parent_email }}</p>
+            <p><span class="label">Élève(s) inscrit(s) :</span></p>
+            <ul style="margin: 0; padding-left: 20px;">
+            {% for student in students %}
+                <li>{{ student.first_name }} {{ student.last_name }}</li>
+            {% endfor %}
+            </ul>
+        </div>
+        
+        <p>Pour activer votre compte et commencer à utiliser la plateforme, vous devez définir votre mot de passe en cliquant sur le bouton ci-dessous :</p>
+        
+        <div style="text-align: center; margin: 25px 0;">
+            <a href="{{ reset_url }}" 
+               style="display: inline-block; padding: 12px 30px; background: linear-gradient(135deg, #7290e0, #6fafac); color: white; text-decoration: none; border-radius: 8px; font-weight: 600;">
+                Définir mon mot de passe
+            </a>
+        </div>
+        
+        <p>Ou copiez-collez ce lien dans votre navigateur :</p>
+        <p style="word-break: break-all; color: #7290e0;">
+            {{ reset_url }}
+        </p>
+        
+        <p><strong>Ce lien est valide pendant 7 jours.</strong> Si vous n'avez pas demandé ce compte, vous pouvez ignorer cet email.</p>
+        
+        <p>Une fois votre mot de passe défini, vous pourrez :</p>
+        <ul>
+            <li>Consulter les ateliers disponibles</li>
+            <li>Inscrire {% if students|length > 1 %}vos enfants{% else %}votre enfant{% endif %} aux activités</li>
+            <li>Suivre {% if students|length > 1 %}leur{% else %}sa{% endif %} progression et {% if students|length > 1 %}leurs{% else %}ses{% endif %} présences</li>
+            <li>Accéder aux documents partagés par les intervenants</li>
+        </ul>
+        
+        <p>Nous sommes ravis de vous accueillir dans la communauté des Éclaireurs !</p>
+        
+        <p>Cordialement,<br>
+        <strong>L'équipe des Éclaireurs</strong></p>
+    </div>
+    
+    <div class="footer">
+        <p>Les Éclaireurs - Plateforme d'accompagnement scolaire</p>
+        <p>Cet email a été envoyé automatiquement, merci de ne pas y répondre.</p>
+    </div>
+{% endblock %}
+

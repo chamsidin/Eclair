@@ -1,0 +1,70 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}Connexion - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="py-20">
+    <div class="container mx-auto px-4">
+        <div class="max-w-md mx-auto space-y-8 bg-white rounded-2xl shadow-lg p-10">
+            <div class="text-center space-y-4">
+                <div class="mx-auto h-16 w-16 bg-gradient-to-br from-primary to-secondary rounded-2xl flex items-center justify-center shadow-lg">
+                    <i class="fas fa-graduation-cap text-white text-2xl"></i>
+                </div>
+                <h2 class="text-3xl font-bold text-gray-900">
+                    Connexion à votre compte
+                </h2>
+                <p class="text-sm text-gray-600">
+                    Accédez à votre tableau de bord personnalisé
+                </p>
+            </div>
+            
+            <form class="space-y-6" method="post">
+                {% csrf_token %}
+                <div class="space-y-4">
+                    <div>
+                        <label for="username" class="sr-only">Nom d'utilisateur ou email</label>
+                        <input id="username" name="username" type="text" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary smooth-transition" 
+                               placeholder="Nom d'utilisateur ou email">
+                    </div>
+                    <div>
+                        <label for="password" class="sr-only">Mot de passe</label>
+                        <input id="password" name="password" type="password" required 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-xl bg-white placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary smooth-transition" 
+                               placeholder="Mot de passe">
+                        <div class="mt-2 text-right">
+                            <a href="{% url 'App:password_reset' %}" class="text-sm text-primary hover:text-secondary smooth-transition">
+                                Mot de passe oublié ?
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" 
+                        class="w-full flex justify-center items-center gap-2 py-3 px-4 text-sm font-semibold rounded-xl text-white bg-gradient-to-br from-primary to-secondary hover:shadow-2xl smooth-transition focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                    <i class="fas fa-lock"></i>
+                    Se connecter
+                </button>
+
+                <div class="text-center text-sm text-gray-600">
+                    Pas encore de compte ? 
+                    <a href="{% url 'App:main_formulaires' %}" class="font-semibold text-primary hover:text-secondary smooth-transition">
+                        Créer un compte
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.body.classList.add('dark-theme');
+</script>
+{% endblock %}

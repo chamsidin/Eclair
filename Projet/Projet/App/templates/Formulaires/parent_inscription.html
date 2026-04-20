@@ -1,0 +1,368 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}Inscription Parent - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/formulaires-dark.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="inscription-container">
+    <a href="{% url 'App:main_formulaires' %}" class="back-button">
+        <i class="fas fa-arrow-left"></i> Retour aux formulaires
+    </a>
+    
+    <div class="text-center mb-4">
+        <h1 class="display-4 text-primary">Inscription Parent</h1>
+        <p class="lead">Inscrivez votre enfant à notre programme d'accompagnement scolaire</p>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <form method="post" novalidate>
+        {% csrf_token %}
+        
+        <!-- Informations du parent -->
+        <div class="form-section">
+            <h3><i class="fas fa-user"></i> Informations du parent</h3>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.parent_first_name.id_for_label }}">
+                            Prénom du parent <span class="required">*</span>
+                        </label>
+                        {{ form.parent_first_name }}
+                        {% if form.parent_first_name.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.parent_first_name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.parent_last_name.id_for_label }}">
+                            Nom du parent <span class="required">*</span>
+                        </label>
+                        {{ form.parent_last_name }}
+                        {% if form.parent_last_name.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.parent_last_name.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.parent_email.id_for_label }}">
+                            Email du parent <span class="required">*</span>
+                        </label>
+                        {{ form.parent_email }}
+                        {% if form.parent_email.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.parent_email.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="{{ form.parent_phone.id_for_label }}">
+                            Téléphone du parent <span class="required">*</span>
+                        </label>
+                        {{ form.parent_phone }}
+                        {% if form.parent_phone.errors %}
+                            <div class="text-danger small">
+                                {% for error in form.parent_phone.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Students Information -->
+        <div class="form-section">
+            <h3><i class="fas fa-graduation-cap"></i> Informations des élèves</h3>
+            <div id="students-container">
+                <!-- Student forms will be added here by JavaScript -->
+            </div>
+            <button type="button" class="btn btn-secondary mt-3" id="add-student-btn">
+                <i class="fas fa-plus"></i> Ajouter un(e) élève
+            </button>
+        </div>
+
+        <!-- Motivation -->
+        <div class="form-section">
+            <h3><i class="fas fa-comment"></i> Motivation</h3>
+            <div class="form-group">
+                <label for="{{ form.motivation.id_for_label }}">
+                    Pourquoi souhaitez-vous inscrire votre enfant ?
+                </label>
+                {{ form.motivation }}
+                <div class="help-text">Décrivez brièvement les raisons de cette inscription et vos attentes</div>
+                {% if form.motivation.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.motivation.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Donation -->
+        <div class="form-section">
+            <h3><i class="fas fa-heart"></i> Don (à l'avenir)</h3>
+            <div class="form-group">
+                <div class="form-check mb-3">
+                    <label for="{{ form.wants_to_donate.id_for_label }}" class="form-check-label" style="cursor: pointer;">
+                        {{ form.wants_to_donate }}
+                        Souhaitez-vous faire un don pour soutenir notre association ?
+                    </label>
+                    {% if form.wants_to_donate.errors %}
+                        <div class="text-danger small">
+                            {% for error in form.wants_to_donate.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div id="donation-amount-group" style="display: none;">
+                    <label for="{{ form.donation_amount.id_for_label }}">
+                        Montant du don (€)
+                    </label>
+                    <div style="position: relative; display: inline-block; width: 100%;">
+                        {{ form.donation_amount }}
+                        <span style="position: absolute; right: 20px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; pointer-events: none; color: #6c757d;">€</span>
+                    </div>
+                    {% if form.donation_amount.errors %}
+                        <div class="text-danger small">
+                            {% for error in form.donation_amount.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center">
+            <button type="submit" class="btn-submit">
+                <i class="fas fa-paper-plane"></i> Envoyer la demande d'inscription
+            </button>
+        </div>
+    </form>
+
+    <div class="mt-4 p-3 bg-light rounded">
+        <h5><i class="fas fa-info-circle"></i> Informations importantes</h5>
+        <ul class="mb-0">
+            <li>Votre demande sera examinée par notre équipe dans les plus brefs délais.</li>
+            <li>Vous recevrez une confirmation par email une fois la demande traitée.</li>
+            <li>Les champs marqués d'un astérisque (*) sont obligatoires.</li>
+            <li>Pour toute question, n'hésitez pas à nous contacter.</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Apply dark theme to body
+    document.body.classList.add('dark-theme');
+    
+    // Dynamic student fields management
+    let studentCount = 0;
+    
+    // Establishments data from backend
+    const establishmentsData = [
+        {% for establishment in establishments %}
+        { id: {{ establishment.id }}, name: "{{ establishment.name|escapejs }}" },
+        {% endfor %}
+    ];
+
+    function createStudentForm(index) {
+        const studentDiv = document.createElement('div');
+        studentDiv.className = 'student-form-group mb-4';
+        studentDiv.setAttribute('data-student-index', index);
+        
+        // Build establishment options
+        let establishmentOptions = '<option value="">Sélectionnez un établissement</option>';
+        establishmentsData.forEach(est => {
+            establishmentOptions += `<option value="${est.id}">${est.name}</option>`;
+        });
+        
+        studentDiv.innerHTML = `
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0"><i class="fas fa-user-graduate"></i> Élève ${index + 1}</h5>
+                ${index > 0 ? '<button type="button" class="btn btn-danger btn-sm remove-student-btn"><i class="fas fa-times"></i> Supprimer</button>' : ''}
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Prénom de l'élève <span class="required">*</span></label>
+                        <input type="text" name="student_first_name_${index}" class="form-control" placeholder="Prénom de l'élève" required>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label>Nom de l'élève <span class="required">*</span></label>
+                        <input type="text" name="student_last_name_${index}" class="form-control" placeholder="Nom de l'élève" required>
+                    </div>
+                </div>
+                <div style="display: none;">
+                    <input type="hidden" name="student_birth_date_${index}" value="2010-01-01">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Établissement scolaire <span class="required">*</span></label>
+                        <select name="student_establishment_${index}" class="form-control" required>
+                            ${establishmentOptions}
+                        </select>
+                        <div class="help-text">
+                            <i class="fas fa-info-circle"></i> Si l'établissement n'apparaît pas dans la liste, cela signifie qu'il n'est pas encore partenaire. 
+                            <a href="{% url 'App:home' %}#contact" target="_blank">Contactez-nous</a> pour en savoir plus.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        
+        return studentDiv;
+    }
+    
+    function addStudent() {
+        const container = document.getElementById('students-container');
+        const studentForm = createStudentForm(studentCount);
+        container.appendChild(studentForm);
+        
+        // Add event listener to remove button if it exists
+        const removeBtn = studentForm.querySelector('.remove-student-btn');
+        if (removeBtn) {
+            removeBtn.addEventListener('click', function() {
+                studentForm.remove();
+                updateStudentNumbers();
+            });
+        }
+        
+        studentCount++;
+    }
+    
+    function updateStudentNumbers() {
+        const studentForms = document.querySelectorAll('.student-form-group');
+        studentForms.forEach((form, index) => {
+            const title = form.querySelector('h5');
+            title.innerHTML = `<i class="fas fa-user-graduate"></i> Élève ${index + 1}`;
+            
+            // Update input and select names
+            const inputs = form.querySelectorAll('input[type="text"]');
+            inputs[0].name = `student_first_name_${index}`;
+            inputs[1].name = `student_last_name_${index}`;
+            
+            // Update hidden birth_date input
+            const hiddenInput = form.querySelector('input[type="hidden"]');
+            if (hiddenInput) {
+                hiddenInput.name = `student_birth_date_${index}`;
+            }
+            
+            const select = form.querySelector('select');
+            if (select) {
+                select.name = `student_establishment_${index}`;
+            }
+        });
+    }
+    
+    // Validation côté client
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.querySelector('form');
+        const submitBtn = document.querySelector('.btn-submit');
+        const addStudentBtn = document.getElementById('add-student-btn');
+        
+        // Add first student form on page load
+        addStudent();
+        
+        // Add student button click handler
+        addStudentBtn.addEventListener('click', function() {
+            addStudent();
+        });
+        
+        // Donation checkbox handler
+        const wantsToDonateCheckbox = document.getElementById('id_wants_to_donate');
+        const donationAmountGroup = document.getElementById('donation-amount-group');
+        const donationAmountInput = document.getElementById('id_donation_amount');
+        
+        if (wantsToDonateCheckbox && donationAmountGroup) {
+            // Show/hide donation amount field based on checkbox
+            function toggleDonationAmount() {
+                if (wantsToDonateCheckbox.checked) {
+                    donationAmountGroup.style.display = 'block';
+                    if (donationAmountInput) {
+                        donationAmountInput.required = false; // Optional even if checked
+                    }
+                } else {
+                    donationAmountGroup.style.display = 'none';
+                    if (donationAmountInput) {
+                        donationAmountInput.value = '';
+                        donationAmountInput.required = false;
+                    }
+                }
+            }
+            
+            // Initial state
+            toggleDonationAmount();
+            
+            // Add event listener
+            wantsToDonateCheckbox.addEventListener('change', toggleDonationAmount);
+        }
+        
+        form.addEventListener('submit', function(e) {
+            // Check if at least one student is added
+            const studentForms = document.querySelectorAll('.student-form-group');
+            if (studentForms.length === 0) {
+                e.preventDefault();
+                alert('Veuillez ajouter au moins un élève.');
+                return;
+            }
+            
+            // Désactiver le bouton pour éviter les doubles soumissions
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+        });
+        
+        // Validation en temps réel
+        const requiredFields = form.querySelectorAll('input[required], textarea[required]');
+        requiredFields.forEach(field => {
+            field.addEventListener('blur', function() {
+                if (this.value.trim() === '') {
+                    this.style.borderColor = '#ff7f7f';
+                } else {
+                    this.style.borderColor = '#2fe7d1';
+                }
+            });
+        });
+    });
+</script>
+{% endblock %}

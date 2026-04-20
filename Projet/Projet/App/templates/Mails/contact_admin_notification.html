@@ -1,0 +1,33 @@
+{% extends 'Mails/base_email.html' %}
+
+{% block email_content %}
+    <div class="header">
+        <h2>Nouveau Message de Contact</h2>
+    </div>
+    
+    <div class="content">
+        <p>Vous avez reçu un nouveau message depuis le formulaire de contact du site Les Éclaireurs.</p>
+        
+        <div class="info-box">
+            <p><span class="label">Nom complet :</span> {{ full_name }}</p>
+            <p><span class="label">Email :</span> {{ email }}</p>
+            <p><span class="label">Sujet :</span> {{ subject }}</p>
+        </div>
+        
+        <div class="message-box">
+            <p><span class="label">Message :</span></p>
+            <p>{{ message|linebreaks }}</p>
+        </div>
+        
+        <p style="margin-top: 20px;">
+            <strong>Pour répondre :</strong> Répondez directement à cet email ou contactez l'utilisateur à l'adresse : 
+            <a href="mailto:{{ email }}">{{ email }}</a>
+        </p>
+    </div>
+    
+    <div class="footer">
+        <p>Les Éclaireurs - Plateforme d'accompagnement scolaire</p>
+        <p>Cet email a été envoyé automatiquement depuis le formulaire de contact.</p>
+    </div>
+{% endblock %}
+

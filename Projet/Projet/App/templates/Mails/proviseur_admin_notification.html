@@ -1,0 +1,39 @@
+{% extends 'Mails/base_email.html' %}
+
+{% block email_content %}
+    <div class="header">
+        <h2>Nouvelle Demande de Partenariat</h2>
+    </div>
+    
+    <div class="content">
+        <p>Vous avez reçu une nouvelle demande de partenariat depuis le formulaire proviseur du site Les Éclaireurs.</p>
+        
+        <div class="info-box">
+            <p><span class="label">Établissement :</span> {{ school_name }}</p>
+            <p><span class="label">Contact :</span> {{ contact_name }}</p>
+            <p><span class="label">Email :</span> {{ contact_email }}</p>
+            <p><span class="label">Téléphone :</span> {{ contact_phone }}</p>
+        </div>
+        
+        <div class="info-box">
+            <p><span class="label">Adresse :</span></p>
+            <p>{{ school_address|linebreaks }}</p>
+        </div>
+        
+        <div class="message-box">
+            <p><span class="label">Motivation :</span></p>
+            <p>{{ motivation|linebreaks }}</p>
+        </div>
+        
+        <p style="margin-top: 20px;">
+            <strong>Pour répondre :</strong> Répondez directement à cet email ou contactez le proviseur à l'adresse : 
+            <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
+        </p>
+    </div>
+    
+    <div class="footer">
+        <p>Les Éclaireurs - Plateforme d'accompagnement scolaire</p>
+        <p>Cet email a été envoyé automatiquement depuis le formulaire de demande de partenariat.</p>
+    </div>
+{% endblock %}
+

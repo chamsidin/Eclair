@@ -1,0 +1,269 @@
+{% extends 'Base/base.html' %}
+{% load static %}
+
+{% block title %}{{ page_title }} - Les Éclaireurs{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/dark-theme.css' %}">
+<link rel="stylesheet" href="{% static 'css/parent-dashboard.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="parent-dashboard attendance-page min-h-screen py-8">
+    <div class="container mx-auto px-4">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="flex items-center space-x-4 mb-2">
+                        <a href="{% url 'App:parent_dashboard' %}" class="text-gray-600 hover:text-primary">
+                            <i class="fas fa-arrow-left text-xl"></i>
+                        </a>
+                        <h1 class="text-3xl font-bold text-gray-900">Feuilles de Présence</h1>
+                    </div>
+                    <p class="text-gray-600">Consultez les présences de vos enfants aux ateliers</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Filtres</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Filter by Child -->
+                <div>
+                    <label for="child-filter" class="text-sm font-medium text-gray-700 block mb-2">Filtrer par enfant:</label>
+                    <select id="child-filter" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" onchange="filterByChild(this.value)">
+                        <option value="">Tous mes enfants</option>
+                        {% for child in children %}
+                        <option value="{{ child.id }}" {% if selected_child and selected_child.id == child.id %}selected{% endif %}>
+                            {{ child.first_name }} {{ child.last_name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <!-- Filter by Workshop -->
+                <div>
+                    <label for="workshop-filter" class="text-sm font-medium text-gray-700 block mb-2">Filtrer par atelier:</label>
+                    <select id="workshop-filter" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-primary focus:ring focus:ring-primary focus:ring-opacity-50" onchange="filterByWorkshop(this.value)">
+                        <option value="">Tous les ateliers</option>
+                        {% for workshop in workshops %}
+                        <option value="{{ workshop.id }}" {% if selected_workshop and selected_workshop.id == workshop.id %}selected{% endif %}>
+                            {{ workshop.title }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Left Panel: Attendance Sheets List -->
+            <div class="lg:col-span-1">
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Feuilles de Présence</h3>
+                    
+                    <!-- Attendance Sheets List -->
+                    <div class="space-y-2 max-h-[600px] overflow-y-auto">
+                        {% for sheet in attendance_sheets %}
+                        <a href="?sheet={{ sheet.id }}{% if selected_child %}&child={{ selected_child.id }}{% endif %}{% if selected_workshop %}&workshop={{ selected_workshop.id }}{% endif %}" 
+                           class="block p-3 rounded-lg border transition-colors attendance-sheet-item {% if selected_sheet and selected_sheet.id == sheet.id %}selected-sheet{% else %}border-gray-200 hover:bg-gray-50{% endif %}">
+                            <div class="flex items-center justify-between">
+                                <div class="flex-1">
+                                    <div class="text-sm font-medium text-gray-900">{{ sheet.workshop.title }}</div>
+                                    <div class="text-xs text-gray-500 mt-1">{{ sheet.date|date:"d/m/Y" }}</div>
+                                    <div class="text-xs text-gray-400 mt-1">
+                                        <i class="fas fa-user mr-1"></i>{{ sheet.workshop.intervenant.get_full_name|default:sheet.workshop.intervenant.username }}
+                                    </div>
+                                </div>
+                                {% if sheet.is_finalized %}
+                                <span class="ml-2 px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                                    Finalisée
+                                </span>
+                                {% else %}
+                                <span class="ml-2 px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                    En cours
+                                </span>
+                                {% endif %}
+                            </div>
+                        </a>
+                        {% empty %}
+                        <div class="text-center py-8">
+                            <i class="fas fa-calendar-check text-gray-400 text-4xl mb-3"></i>
+                            <p class="text-gray-500 text-sm">Aucune feuille de présence disponible</p>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Panel: Selected Attendance Sheet Details -->
+            <div class="lg:col-span-2">
+                {% if selected_sheet %}
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <!-- Sheet Header -->
+                    <div class="mb-6 pb-6 border-b border-gray-200">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-gray-900">{{ selected_sheet.workshop.title }}</h3>
+                                <p class="text-sm text-gray-600 mt-1">{{ selected_sheet.date|date:"l d F Y" }}</p>
+                            </div>
+                            {% if selected_sheet.is_finalized %}
+                            <span class="px-3 py-1 text-sm font-semibold rounded-full bg-green-100 text-green-800">
+                                <i class="fas fa-check-circle mr-1"></i>Finalisée
+                            </span>
+                            {% else %}
+                            <span class="px-3 py-1 text-sm font-semibold rounded-full bg-yellow-100 text-yellow-800">
+                                <i class="fas fa-clock mr-1"></i>En cours
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <!-- Workshop Info -->
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <span class="text-gray-500">Établissement:</span>
+                                <span class="ml-2 font-medium text-gray-900">{{ selected_sheet.workshop.establishment.name }}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Intervenant:</span>
+                                <span class="ml-2 font-medium text-gray-900">{{ selected_sheet.workshop.intervenant.get_full_name|default:selected_sheet.workshop.intervenant.username }}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Date de création:</span>
+                                <span class="ml-2 font-medium text-gray-900">{{ selected_sheet.created_at|date:"d/m/Y H:i" }}</span>
+                            </div>
+                            <div>
+                                <span class="text-gray-500">Jour:</span>
+                                <span class="ml-2 font-medium text-gray-900">{{ selected_sheet.workshop.get_day_display }}</span>
+                            </div>
+                        </div>
+
+                        {% if selected_sheet.notes %}
+                        <div class="mt-4 p-3 bg-blue-50 rounded-lg">
+                            <p class="text-sm font-semibold text-gray-700 mb-1">Notes de l'intervenant:</p>
+                            <p class="text-sm text-gray-600">{{ selected_sheet.notes }}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Attendance Details for Your Children -->
+                    <div>
+                        <h4 class="text-sm font-semibold text-gray-700 mb-3">
+                            Présence de {% if selected_child %}{{ selected_child.first_name }}{% else %}vos enfants{% endif %}
+                        </h4>
+                        {% if attendance_data %}
+                        <div class="space-y-4">
+                            {% for data in attendance_data %}
+                            <div class="border border-gray-200 rounded-lg p-4 {% if data.status == 'present' %}bg-green-50{% else %}bg-red-50{% endif %}">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center">
+                                        <div class="w-12 h-12 bg-primary rounded-full flex items-center justify-center mr-3">
+                                            <span class="text-white font-medium">
+                                                {{ data.student.first_name|first }}{{ data.student.last_name|first }}
+                                            </span>
+                                        </div>
+                                        <div>
+                                            <div class="text-base font-semibold text-gray-900">
+                                                {{ data.student.first_name }} {{ data.student.last_name }}
+                                            </div>
+                                            <div class="text-sm text-gray-600">
+                                                {{ data.student.establishment.name }} - {{ data.student.classe|default:"—" }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        {% if data.status == 'present' %}
+                                        <span class="px-4 py-2 text-sm font-semibold rounded-full bg-green-100 text-green-800 border-2 border-green-600">
+                                            <i class="fas fa-check-circle mr-1"></i>Présent
+                                        </span>
+                                        {% else %}
+                                        <span class="px-4 py-2 text-sm font-semibold rounded-full bg-red-100 text-red-800 border-2 border-red-600">
+                                            <i class="fas fa-times-circle mr-1"></i>Absent
+                                        </span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                
+                                {% if data.notes %}
+                                <div class="mt-3 p-3 bg-white rounded-lg border border-gray-200">
+                                    <p class="text-xs font-semibold text-gray-700 mb-1">Notes de l'intervenant:</p>
+                                    <p class="text-sm text-gray-600">{{ data.notes }}</p>
+                                </div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="text-center py-8">
+                            <i class="fas fa-users text-gray-400 text-4xl mb-3"></i>
+                            <p class="text-gray-500">Aucune donnée de présence pour vos enfants dans cette séance</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <div class="bg-white rounded-lg shadow-md p-12 text-center">
+                    <i class="fas fa-hand-pointer text-gray-400 text-6xl mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-700 mb-2">Sélectionnez une feuille de présence</h3>
+                    <p class="text-gray-500">Cliquez sur une feuille de présence à gauche pour voir les détails</p>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.body.classList.add('dark-theme');
+
+    function filterByChild(childId) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('sheet'); // Clear sheet selection when changing child
+        if (childId) {
+            url.searchParams.set('child', childId);
+        } else {
+            url.searchParams.delete('child');
+        }
+        window.location.href = url.toString();
+    }
+
+    function filterByWorkshop(workshopId) {
+        const url = new URL(window.location.href);
+        url.searchParams.delete('sheet'); // Clear sheet selection when changing workshop
+        if (workshopId) {
+            url.searchParams.set('workshop', workshopId);
+        } else {
+            url.searchParams.delete('workshop');
+        }
+        window.location.href = url.toString();
+    }
+</script>
+
+<style>
+    .parent-dashboard .attendance-sheet-item.selected-sheet {
+        background: linear-gradient(135deg, rgba(47, 231, 209, 0.15), rgba(64, 191, 255, 0.12)) !important;
+        border: 2px solid rgba(47, 231, 209, 0.5) !important;
+        box-shadow: 0 4px 12px rgba(47, 231, 209, 0.2);
+    }
+
+    .parent-dashboard .attendance-sheet-item.selected-sheet .text-gray-900 {
+        color: #2fe7d1 !important;
+        font-weight: 600;
+    }
+
+    .parent-dashboard .attendance-sheet-item.selected-sheet .text-gray-500,
+    .parent-dashboard .attendance-sheet-item.selected-sheet .text-gray-400 {
+        color: rgba(234, 246, 243, 0.85) !important;
+    }
+    
+    .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
