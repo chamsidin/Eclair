@@ -1,0 +1,418 @@
+/* Home Page Specific Styles */
+
+/* Apply Aptos font to entire home page */
+body.dark-theme {
+    font-family: 'Aptos', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* Force all text to be white on home page */
+body.dark-theme,
+body.dark-theme p,
+body.dark-theme h1,
+body.dark-theme h2,
+body.dark-theme h3,
+body.dark-theme h4,
+body.dark-theme h5,
+body.dark-theme h6,
+body.dark-theme span,
+body.dark-theme div,
+body.dark-theme li {
+    color: #ffffff !important;
+}
+
+/* Override all Tailwind text color classes */
+body.dark-theme .text-gray-600,
+body.dark-theme .text-gray-700,
+body.dark-theme .text-gray-900,
+body.dark-theme .text-primary,
+body.dark-theme .text-secondary,
+body.dark-theme .text-purple-600,
+body.dark-theme .text-gray-100,
+body.dark-theme .text-gray-200 {
+    color: #ffffff !important;
+}
+
+/* Glow text effect for hero title */
+.glow-text {
+    color: #ffffff !important;
+    font-weight: 600 !important;
+    text-shadow:
+        0 0 2px  #ffffff,
+        0 0 5px  rgba(240,245,255,0.7),
+        0 0 10px rgba(220,230,245,0.5),
+        0 0 18px rgba(200,210,230,0.35) !important;
+}
+
+/* Make all sections transparent so body gradient shows through continuously */
+body.dark-theme section {
+    background: transparent !important;
+    margin: 0 !important;
+    border: none !important;
+    display: block;
+}
+
+/* Remove any container margins that might create gaps */
+body.dark-theme section .container {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Notre Mission Section - Circular Image */
+#notre-mission .rounded-full {
+    border: 3px solid rgba(47, 231, 209, 0.2);
+    box-shadow: 0 0 30px rgba(47, 231, 209, 0.1);
+}
+
+#notre-mission .rounded-full img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+/* Hero Section Enhancements */
+.hero-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="white" opacity="0.1"/><circle cx="75" cy="75" r="1" fill="white" opacity="0.1"/><circle cx="50" cy="10" r="0.5" fill="white" opacity="0.1"/><circle cx="10" cy="60" r="0.5" fill="white" opacity="0.1"/><circle cx="90" cy="40" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-overlay {
+    background: linear-gradient(180deg,
+        rgba(6, 18, 34, 0.05) 0%,
+        rgba(6, 18, 34, 0.18) 30%,
+        rgba(6, 18, 34, 0.45) 65%,
+        rgba(6, 18, 34, 0.7) 100%);
+    backdrop-filter: blur(2px);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* Floating Elements */
+.floating-element {
+    animation: float 6s ease-in-out infinite;
+}
+
+.floating-element:nth-child(2) {
+    animation-delay: -2s;
+}
+
+.floating-element:nth-child(3) {
+    animation-delay: -4s;
+}
+
+@keyframes float {
+    0%, 100% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+}
+
+/* About Section */
+.about-section {
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+.mission-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2.5rem;
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+    border-left: 4px solid var(--primary-color);
+}
+
+/* Services Grid */
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.service-card {
+    background: white;
+    border-radius: 16px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.service-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.service-card:hover::before {
+    left: 100%;
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.service-icon {
+    width: 80px;
+    height: 80px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: white;
+    font-size: 2rem;
+}
+
+/* Statistics Section */
+.stats-section {
+    background: var(--primary-color);
+    color: white;
+    position: relative;
+}
+
+.stats-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="dots" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23dots)"/></svg>');
+}
+
+.stat-card {
+    text-align: center;
+    padding: 2rem;
+    position: relative;
+    z-index: 2;
+}
+
+.stat-number {
+    font-size: 3.5rem;
+    font-weight: 900;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, white, #e2e8f0);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.stat-label {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    font-weight: 500;
+}
+
+/* Testimonials */
+.testimonials-section {
+    background: #f8fafc;
+}
+
+.testimonial-slider {
+    position: relative;
+}
+
+.testimonial-item {
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: 16px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    position: relative;
+}
+
+.testimonial-item::before {
+    content: '"';
+    font-size: 5rem;
+    color: var(--primary-color);
+    position: absolute;
+    top: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: serif;
+    opacity: 0.3;
+}
+
+.testimonial-text {
+    font-size: 1.2rem;
+    font-style: italic;
+    margin-bottom: 2rem;
+    color: var(--dark-gray);
+}
+
+.testimonial-author {
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.testimonial-role {
+    color: var(--medium-gray);
+    font-size: 0.9rem;
+}
+
+/* Contact Section */
+.contact-section {
+    background: white;
+}
+
+.contact-info-card {
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.contact-icon {
+    width: 50px;
+    height: 50px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 1.2rem;
+}
+
+/* Contact Form Inputs - Dark Theme Styling */
+/* Override Tailwind classes with higher specificity */
+#contact .bg-white {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%) !important;
+    border: 1px solid rgba(160, 230, 220, 0.08) !important;
+}
+
+#contact input[type="text"],
+#contact input[type="email"],
+#contact select,
+#contact textarea {
+    background: rgba(255, 255, 255, 0.03) !important;
+    color: #eaf6f3 !important;
+    border: 1px solid rgba(160, 230, 220, 0.2) !important;
+}
+
+#contact input[type="text"]::placeholder,
+#contact input[type="email"]::placeholder,
+#contact textarea::placeholder {
+    color: rgba(255, 255, 255, 0.4) !important;
+}
+
+#contact input[type="text"]:focus,
+#contact input[type="email"]:focus,
+#contact select:focus,
+#contact textarea:focus {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border-color: #2fe7d1 !important;
+    box-shadow: 0 0 0 2px rgba(47, 231, 209, 0.2) !important;
+}
+
+#contact label,
+#contact .text-gray-700,
+#contact .block.text-gray-700 {
+    color: #eaf6f3 !important;
+}
+
+#contact h2.text-gray-900 {
+    color: #eaf6f3 !important;
+    text-shadow: 0 0 20px rgba(47, 231, 209, 0.3);
+}
+
+#contact p.text-gray-600 {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Select dropdown styling for contact form */
+#contact select {
+    background: rgba(16, 40, 60, 0.6) !important;
+    color: #eaf6f3 !important;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232fe7d1' d='M6 9L1 4h10z'/%3E%3C/svg%3E") !important;
+    background-repeat: no-repeat !important;
+    background-position: right 0.75rem center !important;
+    background-size: 12px !important;
+    padding-right: 2.5rem !important;
+}
+
+#contact select:hover {
+    background: rgba(16, 40, 60, 0.8) !important;
+    border-color: rgba(47, 231, 209, 0.4) !important;
+}
+
+#contact select option {
+    background: #0a1929;
+    color: #eaf6f3;
+    padding: 0.5rem;
+}
+
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(135deg, var(--secondary-color), var(--primary-color));
+    color: white;
+    text-align: center;
+    padding: 4rem 0;
+}
+
+.cta-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.cta-subtitle {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+    opacity: 0.9;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero-title {
+        font-size: 2.2rem;
+    }
+    
+    .service-card {
+        padding: 1.5rem;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+    }
+    
+    .testimonial-item {
+        padding: 2rem 1rem;
+    }
+    
+    .contact-info-card {
+        padding: 2rem;
+    }
+}

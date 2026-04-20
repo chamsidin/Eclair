@@ -1,0 +1,708 @@
+/* Dark Theme Styles for Formulaires - Les Éclaireurs */
+
+/* ========================================
+   MAIN FORMULAIRES PAGE STYLES
+   ======================================== */
+
+.formulaires-container {
+    max-width: 1400px;
+    margin: 2rem auto;
+    padding: 2rem;
+}
+
+.page-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.page-title {
+    font-size: 2.5rem;
+    color: #eaf6f3;
+    margin-bottom: 1rem;
+    font-weight: 700;
+    text-shadow: 0 0 20px rgba(47, 231, 209, 0.3);
+}
+
+.page-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.7);
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+.formulaires-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.formulaire-card {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-radius: 15px;
+    padding: 2.5rem;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(160, 230, 220, 0.08);
+}
+
+.formulaire-card::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    border-radius: 15px;
+    padding: 2px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+}
+
+.formulaire-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(47, 231, 209, 0.2);
+}
+
+.formulaire-card:hover::before {
+    opacity: 1;
+}
+
+.formulaire-card.parent-card {
+    background: linear-gradient(135deg, rgba(47, 231, 209, 0.12) 0%, rgba(64, 191, 255, 0.08) 100%);
+}
+
+.formulaire-card.parent-card::before {
+    background: linear-gradient(135deg, rgba(47, 231, 209, 0.4), rgba(64, 191, 255, 0.3));
+}
+
+.formulaire-card.parent-card:hover {
+    border-color: rgba(47, 231, 209, 0.3);
+}
+
+.formulaire-card.proviseur-card {
+    background: linear-gradient(135deg, rgba(255, 127, 80, 0.12) 0%, rgba(255, 165, 0, 0.08) 100%);
+}
+
+.formulaire-card.proviseur-card::before {
+    background: linear-gradient(135deg, rgba(255, 127, 80, 0.4), rgba(255, 165, 0, 0.3));
+}
+
+.formulaire-card.proviseur-card:hover {
+    border-color: rgba(255, 127, 80, 0.3);
+}
+
+.card-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    display: block;
+}
+
+.parent-card .card-icon {
+    color: #2fe7d1;
+}
+
+.proviseur-card .card-icon {
+    color: #ff7f50;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #eaf6f3;
+}
+
+.card-description {
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+.card-features {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 2rem;
+}
+
+.card-features li {
+    padding: 0.5rem 0;
+    color: rgba(255, 255, 255, 0.7);
+    position: relative;
+    padding-left: 1.5rem;
+}
+
+.card-features li:before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: #2fe7d1;
+    font-weight: bold;
+}
+
+.btn-formulaire {
+    width: 100%;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-parent {
+    background: linear-gradient(135deg, #2fe7d1, #40bfff);
+    color: #042034;
+}
+
+.btn-parent:hover {
+    background: linear-gradient(135deg, #40bfff, #2fe7d1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(47, 231, 209, 0.4);
+    color: #042034;
+    text-decoration: none;
+}
+
+.btn-proviseur {
+    background: linear-gradient(135deg, #ff7f50, #ffa500);
+    color: #042034;
+}
+
+.btn-proviseur:hover {
+    background: linear-gradient(135deg, #ffa500, #ff7f50);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 127, 80, 0.4);
+    color: #042034;
+    text-decoration: none;
+}
+
+.info-section {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    padding: 2rem;
+    border-radius: 15px;
+    margin-top: 2rem;
+    border: 1px solid rgba(160, 230, 220, 0.08);
+}
+
+.info-section h3 {
+    color: #eaf6f3;
+    margin-bottom: 1rem;
+    text-align: center;
+    text-shadow: 0 0 20px rgba(47, 231, 209, 0.2);
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.info-item {
+    text-align: center;
+    padding: 1rem;
+}
+
+.info-item i {
+    font-size: 2rem;
+    color: #2fe7d1;
+    margin-bottom: 0.5rem;
+}
+
+.info-item h4 {
+    color: #eaf6f3;
+    margin-bottom: 0.5rem;
+}
+
+.info-item p {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+/* ========================================
+   INSCRIPTION FORMS STYLES (Parent & Proviseur)
+   ======================================== */
+
+.inscription-container,
+.partenariat-container {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(160, 230, 220, 0.08);
+    position: relative;
+}
+
+/* Back Button */
+.back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, rgba(47, 231, 209, 0.1) 0%, rgba(64, 191, 255, 0.1) 100%);
+    border: 1px solid rgba(47, 231, 209, 0.3);
+    border-radius: 8px;
+    color: #2fe7d1;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.back-button:hover {
+    background: linear-gradient(135deg, rgba(47, 231, 209, 0.2) 0%, rgba(64, 191, 255, 0.2) 100%);
+    border-color: #2fe7d1;
+    transform: translateX(-5px);
+    color: #2fe7d1;
+    text-decoration: none;
+}
+
+.back-button i {
+    transition: transform 0.3s ease;
+}
+
+.back-button:hover i {
+    transform: translateX(-3px);
+}
+
+/* Proviseur back button styling */
+.back-button.proviseur-back {
+    background: linear-gradient(135deg, rgba(255, 127, 80, 0.1) 0%, rgba(255, 165, 0, 0.1) 100%);
+    border-color: rgba(255, 127, 80, 0.3);
+    color: #ff7f50;
+}
+
+.back-button.proviseur-back:hover {
+    background: linear-gradient(135deg, rgba(255, 127, 80, 0.2) 0%, rgba(255, 165, 0, 0.2) 100%);
+    border-color: #ff7f50;
+    color: #ff7f50;
+}
+
+.inscription-container h1,
+.partenariat-container h1 {
+    color: #eaf6f3 !important;
+    text-shadow: 0 0 20px rgba(47, 231, 209, 0.3);
+}
+
+.partenariat-container h1 {
+    text-shadow: 0 0 20px rgba(255, 127, 80, 0.3);
+}
+
+.inscription-container .lead,
+.partenariat-container .lead {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.form-section {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    border: 1px solid rgba(160, 230, 220, 0.08);
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(47, 231, 209, 0.05) 0%, rgba(64, 191, 255, 0.03) 100%);
+}
+
+.partenariat-container .form-section {
+    background: linear-gradient(135deg, rgba(255, 127, 80, 0.08) 0%, rgba(255, 165, 0, 0.05) 100%);
+}
+
+.form-section h3 {
+    color: #eaf6f3;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
+    border-bottom: 2px solid #2fe7d1;
+    padding-bottom: 0.5rem;
+}
+
+.partenariat-container .form-section h3 {
+    border-bottom: 2px solid #ff7f50;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #eaf6f3;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid rgba(160, 230, 220, 0.2);
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+    background: rgba(255, 255, 255, 0.03);
+    color: #eaf6f3;
+}
+
+.form-control:focus {
+    outline: none;
+    border-color: #2fe7d1;
+    box-shadow: 0 0 0 2px rgba(47, 231, 209, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.partenariat-container .form-control:focus {
+    border-color: #ff7f50;
+    box-shadow: 0 0 0 2px rgba(255, 127, 80, 0.2);
+}
+
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+/* Select dropdown styling */
+select.form-control {
+    background: rgba(16, 40, 60, 0.6);
+    color: #eaf6f3;
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%232fe7d1' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 12px;
+    padding-right: 2.5rem;
+}
+
+select.form-control:hover {
+    background: rgba(16, 40, 60, 0.8);
+    border-color: rgba(47, 231, 209, 0.4);
+}
+
+select.form-control:focus {
+    background: rgba(16, 40, 60, 0.9);
+}
+
+/* Option elements in select */
+select.form-control option {
+    background: #0a1929;
+    color: #eaf6f3;
+    padding: 0.5rem;
+}
+
+select.form-control option:hover,
+select.form-control option:focus,
+select.form-control option:checked {
+    background: linear-gradient(135deg, rgba(47, 231, 209, 0.3) 0%, rgba(64, 191, 255, 0.2) 100%);
+    color: #2fe7d1;
+}
+
+/* Proviseur form select styling */
+.partenariat-container select.form-control {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23ff7f50' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+}
+
+.partenariat-container select.form-control option:hover,
+.partenariat-container select.form-control option:focus,
+.partenariat-container select.form-control option:checked {
+    background: linear-gradient(135deg, rgba(255, 127, 80, 0.3) 0%, rgba(255, 165, 0, 0.2) 100%);
+    color: #ff7f50;
+}
+
+.btn-submit {
+    background: linear-gradient(135deg, #2fe7d1, #40bfff);
+    color: #042034;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.btn-submit:hover {
+    background: linear-gradient(135deg, #40bfff, #2fe7d1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(47, 231, 209, 0.4);
+}
+
+.partenariat-container .btn-submit {
+    background: linear-gradient(135deg, #ff7f50, #ffa500);
+    color: #042034;
+}
+
+.partenariat-container .btn-submit:hover {
+    background: linear-gradient(135deg, #ffa500, #ff7f50);
+    box-shadow: 0 8px 20px rgba(255, 127, 80, 0.4);
+}
+
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+}
+
+.alert-success {
+    background-color: rgba(39, 174, 96, 0.2);
+    border: 1px solid rgba(39, 174, 96, 0.4);
+    color: #2fe7d1;
+}
+
+.alert-error {
+    background-color: rgba(231, 76, 60, 0.2);
+    border: 1px solid rgba(231, 76, 60, 0.4);
+    color: #ff7f7f;
+}
+
+.help-text {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-top: 0.5rem;
+    line-height: 1.5;
+}
+
+.help-text a {
+    color: #2fe7d1;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.help-text a:hover {
+    color: #40bfff;
+    text-decoration: underline;
+}
+
+.required {
+    color: #ff7f7f;
+}
+
+.text-danger {
+    color: #ff7f7f !important;
+}
+
+.bg-light {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%) !important;
+    border: 1px solid rgba(160, 230, 220, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.bg-light h5 {
+    color: #eaf6f3;
+}
+
+.bg-light ul li,
+.bg-light ol li {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.bg-light ol li strong {
+    color: #eaf6f3;
+}
+
+/* Benefits section for proviseur form */
+.benefits-section {
+    background: linear-gradient(135deg, rgba(255, 127, 80, 0.15) 0%, rgba(255, 165, 0, 0.08) 100%);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 127, 80, 0.2);
+}
+
+.benefits-section h4 {
+    color: #eaf6f3;
+}
+
+.benefits-list {
+    list-style: none;
+    padding: 0;
+}
+
+.benefits-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 127, 80, 0.15);
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.benefits-list li:last-child {
+    border-bottom: none;
+}
+
+.benefits-list i {
+    color: #ff7f50;
+    margin-right: 0.5rem;
+}
+
+/* ========================================
+   SUCCESS PAGES STYLES
+   ======================================== */
+
+.success-container {
+    max-width: 600px;
+    margin: 4rem auto;
+    padding: 3rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-radius: 15px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    border: 1px solid rgba(160, 230, 220, 0.08);
+}
+
+.success-icon {
+    font-size: 4rem;
+    color: #2fe7d1;
+    margin-bottom: 1rem;
+    text-shadow: 0 0 20px rgba(47, 231, 209, 0.5);
+}
+
+/* Proviseur success icon */
+.success-icon.proviseur-icon {
+    color: #ff7f50;
+    text-shadow: 0 0 20px rgba(255, 127, 80, 0.5);
+}
+
+.success-title {
+    color: #eaf6f3;
+    margin-bottom: 1rem;
+    font-size: 2rem;
+    text-shadow: 0 0 20px rgba(47, 231, 209, 0.3);
+}
+
+.success-title.proviseur-title {
+    text-shadow: 0 0 20px rgba(255, 127, 80, 0.3);
+}
+
+.success-message {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.next-steps {
+    background: linear-gradient(135deg, rgba(47, 231, 209, 0.08) 0%, rgba(64, 191, 255, 0.05) 100%);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    text-align: left;
+    border: 1px solid rgba(47, 231, 209, 0.2);
+}
+
+.next-steps.proviseur-steps {
+    background: linear-gradient(135deg, rgba(255, 127, 80, 0.12) 0%, rgba(255, 165, 0, 0.08) 100%);
+    border: 1px solid rgba(255, 127, 80, 0.2);
+}
+
+.next-steps h4 {
+    color: #eaf6f3;
+    margin-bottom: 1rem;
+}
+
+.next-steps ul,
+.next-steps ol {
+    margin: 0;
+    padding-left: 1.5rem;
+}
+
+.next-steps li {
+    margin-bottom: 0.5rem;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.next-steps li strong {
+    color: #eaf6f3;
+}
+
+.btn-home {
+    background: linear-gradient(135deg, #2fe7d1, #40bfff);
+    color: #042034;
+    padding: 1rem 2rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.btn-home:hover {
+    background: linear-gradient(135deg, #40bfff, #2fe7d1);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(47, 231, 209, 0.4);
+    color: #042034;
+    text-decoration: none;
+}
+
+.btn-home.proviseur-btn {
+    background: linear-gradient(135deg, #ff7f50, #ffa500);
+}
+
+.btn-home.proviseur-btn:hover {
+    background: linear-gradient(135deg, #ffa500, #ff7f50);
+    box-shadow: 0 8px 20px rgba(255, 127, 80, 0.4);
+}
+
+.contact-info {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-top: 2rem;
+    border: 1px solid rgba(160, 230, 220, 0.08);
+}
+
+.contact-info h5 {
+    color: #eaf6f3;
+    margin-bottom: 1rem;
+}
+
+.contact-info p {
+    margin: 0;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+@media (max-width: 992px) {
+    .formulaires-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .formulaires-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .formulaire-card {
+        padding: 2rem;
+    }
+    
+    .page-title {
+        font-size: 2rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .formulaires-container,
+    .inscription-container,
+    .partenariat-container,
+    .success-container {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .page-title {
+        font-size: 1.8rem;
+    }
+}
+
