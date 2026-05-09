@@ -134,3 +134,18 @@ AUTH_USER_MODEL = 'App.User'
 # Captcha Settings
 CAPTCHA_IMAGE_SIZE = (160, 60)
 CAPTCHA_FONT_SIZE = 35
+
+# Email Configuration
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+# Get email credentials from environment variables with fallbacks
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'testingeclaireurs@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'jcug daik ecsr ewkw')
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# Admin/recipient emails
+ADMIN_EMAIL = EMAIL_HOST_USER
+# Used by contact form view
+CONTACT_RECIPIENT_EMAIL = ADMIN_EMAIL
