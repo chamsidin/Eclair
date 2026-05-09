@@ -23,7 +23,8 @@ from .forms import (
 )
 from .models import (
     User, Student, Workshop, Enrollment, ParentApplication, 
-    PartnerApplication, IntervenantApplication, Establishment, Room, Document, Donation, Attendance, AttendanceSheet
+    PartnerApplication, IntervenantApplication, Establishment, Room, Document, Donation, Attendance, AttendanceSheet,
+    Contact
 )
 
 # Create your views here.
@@ -39,6 +40,14 @@ def home(request):
             email = form.cleaned_data['email']
             subject = form.cleaned_data['subject']
             message = form.cleaned_data['message']
+            
+            # Save to database
+            Contact.objects.create(
+                full_name=full_name,
+                email=email,
+                subject=subject,
+                message=message
+            )
             
             try:
                 # Get email settings from Django settings
@@ -64,8 +73,8 @@ def home(request):
                     to=[admin_email],
                     reply_to=[email],  # This makes "Reply" go to the user, not to yourself
                 )
-                admin_email_msg.attach_alternative(admin_html, 'text/html')
-                admin_email_msg.send()
+                #admin_email_msg.attach_alternative(admin_html, 'text/html')
+                #admin_email_msg.send()
                 
                 # Send confirmation email to user
                 user_html = render_to_string('Mails/contact_user_confirmation.html', {
@@ -80,8 +89,8 @@ def home(request):
                     from_email=from_email,
                     to=[email],
                 )
-                user_email_msg.attach_alternative(user_html, 'text/html')
-                user_email_msg.send()
+                #user_email_msg.attach_alternative(user_html, 'text/html')
+                #user_email_msg.send()
                 
                 messages.success(request, 'Votre message a été envoyé avec succès ! Vous recevrez une confirmation par email.')
                 return redirect('App:home')

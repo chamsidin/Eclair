@@ -3,9 +3,32 @@ from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from .models import User, Establishment, Room, Student, Level, Workshop, Enrollment, ParentApplication, PartnerApplication, IntervenantApplication, Document, Donation, Attendance, AttendanceSheet
+from .models import User, Establishment, Room, Student, Level, Workshop, Enrollment, ParentApplication, PartnerApplication, IntervenantApplication, Document, Donation, Attendance, AttendanceSheet, Contact
 
 # Register your models here.
+
+@admin.register(Contact)
+class ContactAdmin(admin.ModelAdmin):
+    """Administration pour le modèle Contact"""
+    list_display = ('full_name', 'email', 'subject', 'message', 'is_read', 'created_at')
+    list_filter = ('is_read', 'created_at', 'subject')
+    search_fields = ('full_name', 'email', 'subject', 'message')
+    ordering = ('-created_at',)
+    readonly_fields = ('created_at',)
+    
+    actions = ['mark_as_read', 'mark_as_unread']
+    
+    def mark_as_read(self, request, queryset):
+        """Action pour marquer comme lu"""
+        updated = queryset.update(is_read=True)
+        self.message_user(request, f'{updated} message(s) marqué(s) comme lu.')
+    mark_as_read.short_description = 'Marquer comme lu'
+    
+    def mark_as_unread(self, request, queryset):
+        """Action pour marquer comme non lu"""
+        updated = queryset.update(is_read=False)
+        self.message_user(request, f'{updated} message(s) marqué(s) comme non lu.')
+    mark_as_unread.short_description = 'Marquer comme non lu'
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
