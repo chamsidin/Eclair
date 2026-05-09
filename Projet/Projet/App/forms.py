@@ -1,6 +1,49 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from captcha.fields import CaptchaField
 from .models import User, ParentApplication, PartnerApplication, IntervenantApplication, Establishment, Workshop, Room, Document, Level
+
+class ContactForm(forms.Form):
+    """Formulaire de contact pour la page d'accueil"""
+    SUBJECT_CHOICES = [
+        ('', 'Sélectionnez un sujet'),
+        ("Inscription d'un enfant", "Inscription d'un enfant"),
+        ("Devenir intervenant", "Devenir intervenant"),
+        ("Partenariat établissement", "Partenariat établissement"),
+        ("Donation", "Donation"),
+        ("Autre demande", "Autre demande"),
+    ]
+    
+    full_name = forms.CharField(
+        max_length=100,
+        widget=forms.TextInput(attrs={
+            'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary smooth-transition',
+            'placeholder': 'Votre nom'
+        })
+    )
+    email = forms.EmailField(
+        widget=forms.EmailInput(attrs={
+            'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary smooth-transition',
+            'placeholder': 'votre.email@exemple.fr'
+        })
+    )
+    subject = forms.ChoiceField(
+        choices=SUBJECT_CHOICES,
+        widget=forms.Select(attrs={
+            'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary smooth-transition'
+        })
+    )
+    message = forms.CharField(
+        widget=forms.Textarea(attrs={
+            'class': 'w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary smooth-transition',
+            'placeholder': 'Votre message...',
+            'rows': 5
+        })
+    )
+    captcha = CaptchaField(
+        label='Vérification',
+        error_messages={'invalid': 'Le code de vérification est incorrect.'}
+    )
 
 class ParentInscriptionForm(forms.ModelForm):
     """Formulaire d'inscription pour les parents"""

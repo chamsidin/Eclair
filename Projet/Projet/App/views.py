@@ -16,7 +16,11 @@ from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from datetime import datetime, timedelta
 import mimetypes
-from .forms import ParentInscriptionForm, ProviseurInscriptionForm, IntervenantInscriptionForm, WorkshopForm, DocumentForm, UserRegistrationForm, AdminUserCreationForm, EstablishmentForm
+from .forms import (
+    ParentInscriptionForm, ProviseurInscriptionForm, IntervenantInscriptionForm, 
+    WorkshopForm, DocumentForm, UserRegistrationForm, AdminUserCreationForm, 
+    EstablishmentForm, ContactForm
+)
 from .models import (
     User, Student, Workshop, Enrollment, ParentApplication, 
     PartnerApplication, IntervenantApplication, Establishment, Room, Document, Donation, Attendance, AttendanceSheet
@@ -28,16 +32,14 @@ from .models import (
 def home(request):
     """Home page view"""
     if request.method == 'POST':
-        # Get form data
-        full_name = request.POST.get('full_name', '').strip()
-        email = request.POST.get('email', '').strip()
-        subject = request.POST.get('subject', '').strip()
-        message = request.POST.get('message', '').strip()
-        
-        # Simple validation
-        if not all([full_name, email, subject, message]):
-            messages.error(request, 'Veuillez remplir tous les champs du formulaire.')
-        else:
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            # Get form data
+            full_name = form.cleaned_data['full_name']
+            email = form.cleaned_data['email']
+            subject = form.cleaned_data['subject']
+            message = form.cleaned_data['message']
+            
             try:
                 # Get email settings from Django settings
                 admin_email = settings.CONTACT_RECIPIENT_EMAIL
@@ -82,19 +84,22 @@ def home(request):
                 user_email_msg.send()
                 
                 messages.success(request, 'Votre message a été envoyé avec succès ! Vous recevrez une confirmation par email.')
+                return redirect('App:home')
                 
             except Exception as e:
                 messages.error(request, 'Une erreur est survenue lors de l\'envoi de votre message. Veuillez réessayer plus tard.')
                 import traceback
                 print(f"Error sending contact email: {e}")
                 print(f"Traceback: {traceback.format_exc()}")
-                # Log email settings (without password) for debugging
-                print(f"Email settings - FROM: {getattr(settings, 'DEFAULT_FROM_EMAIL', 'NOT SET')}, TO: {getattr(settings, 'CONTACT_RECIPIENT_EMAIL', 'NOT SET')}")
-                print(f"EMAIL_HOST_USER: {getattr(settings, 'EMAIL_HOST_USER', 'NOT SET')}")
+        else:
+            messages.error(request, 'Veuillez corriger les erreurs dans le formulaire.')
+    else:
+        form = ContactForm()
     
     context = {
         'page_title': 'Accueil - Les Éclaireurs',
         'page_description': 'Association d\'accompagnement scolaire dédiée à l\'épanouissement et la réussite des élèves.',
+        'contact_form': form,
     }
     return render(request, 'Home/home.html', context)
 

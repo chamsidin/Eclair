@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'App.apps.AppConfig',  # Add our App with full config path
+    'captcha',
 ]
 
 MIDDLEWARE = [
@@ -129,3 +130,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Custom User Model
 AUTH_USER_MODEL = 'App.User'
+
+# Captcha Settings
+CAPTCHA_IMAGE_SIZE = (160, 60)
+CAPTCHA_FONT_SIZE = 35
