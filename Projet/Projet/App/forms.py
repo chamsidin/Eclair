@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
+from django.core.exceptions import ValidationError
+from .services import is_message_intelligible
 from captcha.fields import CaptchaField
 from .models import User, ParentApplication, PartnerApplication, IntervenantApplication, Establishment, Workshop, Room, Document, Level
 
@@ -40,6 +42,22 @@ class ContactForm(forms.Form):
             'rows': 5
         })
     )
+
+    def clean_message(self):
+        message = self.cleaned_data.get('message')
+        print(f"Message à vérifier : {message}")
+
+        # On n'interroge l'IA que si le message fait plus de 10 caractères
+        # pour économiser l'API sur les messages trop courts.
+        if len(message) > 10:
+            if not is_message_intelligible(message):
+                raise ValidationError(
+                    "Votre message semble contenir des caractères incohérents. "
+                    "Merci de rédiger une question compréhensible."
+                )
+        
+        return message
+    
     captcha = CaptchaField(
         label='Vérification',
         error_messages={'invalid': 'Le code de vérification est incorrect.'}
