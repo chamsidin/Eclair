@@ -206,14 +206,14 @@
         <!-- Documents -->
         <div class="form-section">
             <h3><i class="fas fa-file-upload"></i> Documents</h3>
-          
-            
+
+
             <div class="form-group">
                 <label for="{{ form.cv.id_for_label }}">CV (PDF uniquement) <span class="required">*</span></label>
                 {{ form.cv }}
                 {% if form.cv.errors %}
                     <div class="text-danger small">
-                        {% for error in form.cv.errors %}{{ error %}{% endfor %}
+                        {% for error in form.cv.errors %}{{ error }}{% endfor %}
                     </div>
                 {% endif %}
             </div>
@@ -226,6 +226,27 @@
                         {% for error in form.autre_documents.errors %}{{ error }}{% endfor %}
                     </div>
                 {% endif %}
+            </div>
+        </div>
+
+        <!-- CAPTCHA -->
+        <div class="form-section">
+            <h3><i class="fas fa-shield-alt"></i> Vérification de sécurité</h3>
+            <div class="form-group">
+                <label for="{{ form.captcha.id_for_label }}">
+                    {{ form.captcha.label }} <span class="required">*</span>
+                </label>
+                <div class="captcha-wrapper mb-2">
+                    {{ form.captcha }}
+                </div>
+                {% if form.captcha.errors %}
+                    <div class="text-danger small">
+                        {% for error in form.captcha.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div class="help-text">Veuillez recopier les caractères de l'image ci-dessus pour valider votre candidature.</div>
             </div>
         </div>
 
