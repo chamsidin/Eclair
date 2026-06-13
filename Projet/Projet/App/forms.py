@@ -47,13 +47,19 @@ class ContactForm(forms.Form):
 
 class ParentInscriptionForm(forms.ModelForm):
     """Formulaire d'inscription pour les parents"""
-    
+
+    captcha = CaptchaField(
+        label='Vérification',
+        error_messages={'invalid': 'Le code de vérification est incorrect.'}
+    )
+
     class Meta:
         model = ParentApplication
         fields = [
             'parent_first_name', 'parent_last_name', 'parent_email', 'parent_phone',
-            'school_name', 'motivation', 'wants_to_donate', 'donation_amount'
+            'school_name', 'motivation', 'wants_to_donate', 'donation_amount', 'captcha'
         ]
+
         widgets = {
             'parent_first_name': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -140,11 +146,16 @@ class ParentInscriptionForm(forms.ModelForm):
 class ProviseurInscriptionForm(forms.ModelForm):
     """Formulaire d'inscription pour les proviseurs/directeurs d'établissement"""
     
+    captcha = CaptchaField(
+        label='Vérification',
+        error_messages={'invalid': 'Le code de vérification est incorrect.'}
+    )
+
     class Meta:
         model = PartnerApplication
         fields = [
             'school_name', 'contact_name', 'contact_email', 'contact_phone',
-            'school_address', 'motivation'
+            'school_address', 'motivation', 'captcha'
         ]
         widgets = {
             'school_name': forms.TextInput(attrs={
@@ -191,13 +202,18 @@ class ProviseurInscriptionForm(forms.ModelForm):
 class IntervenantInscriptionForm(forms.ModelForm):
     """Formulaire de candidature pour devenir intervenant"""
     
+    captcha = CaptchaField(
+        label='Vérification',
+        error_messages={'invalid': 'Le code de vérification est incorrect.'}
+    )
+
     class Meta:
         model = IntervenantApplication
         fields = [
             'prenom', 'nom', 'email', 'telephone', 'date_naissance', 'adresse',
             'niveau_etudes', 'domaine_etudes', 'experience', 'matieres',
             'disponibilites', 'heures_semaine', 'motivation',
-            'cv', 'autre_documents'
+            'cv', 'autre_documents', 'captcha'
         ]
         widgets = {
             'prenom': forms.TextInput(attrs={
